@@ -1,15 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TradeWR Ads</title>
-
-  <!-- TAG DE VERIFICAÇÃO DO ADSENSE -->
-  <meta name="google-adsense-account" content="ca-pub-7866520264996104">
+    <meta charset="UTF-8">
+    <title>TradeWR Ads</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        #overlay {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            border: 2px solid green;
+            background-color: rgba(0,0,0,0.85);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #ad-frame, #marketing-video {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        #marketing-video {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-  <h1>TradeWR Ads</h1>
-  <p>Domínio configurado para Google AdSense.</p>
+    <div id="overlay">
+        <!-- iFrame do AdSense -->
+        <iframe id="ad-frame" src="https://www.seu-site-ads.com" allowfullscreen></iframe>
+
+        <!-- Vídeo de Marketing -->
+        <video id="marketing-video" src="video-promo.mp4" autoplay muted></video>
+    </div>
+
+    <script>
+        (() => {
+            if (window.__tradeWRInjected) return;
+            window.__tradeWRInjected = true;
+
+            const overlay = document.getElementById('overlay');
+            const adFrame = document.getElementById('ad-frame');
+            const marketingVideo = document.getElementById('marketing-video');
+
+            let adCounter = 0; // Conta quantos anúncios foram exibidos
+
+            function toggleContent() {
+                adCounter++;
+                // A cada 4 anúncios, mostra o vídeo
+                if (adCounter % 5 === 0) {
+                    adFrame.style.display = 'none';
+                    marketingVideo.style.display = 'block';
+                    marketingVideo.play();
+                    setTimeout(() => {
+                        marketingVideo.pause();
+                        marketingVideo.currentTime = 0;
+                        marketingVideo.style.display = 'none';
+                        adFrame.style.display = 'block';
+                    }, 5000); // vídeo de 5 segundos
+                }
+            }
+
+            // Alterna a cada 10 segundos ou quando quiser implementar lógica de carregamento de novo anúncio
+            setInterval(toggleContent, 10000);
+        })();
+    </script>
 </body>
 </html>
