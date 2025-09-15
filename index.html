@@ -1,78 +1,74 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>TradeWR Ads</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        #overlay {
-            position: relative;
-            width: 500px;
-            height: 500px;
-            border: 2px solid green;
-            background-color: rgba(0,0,0,0.85);
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        #ad-frame, #marketing-video {
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
-        #marketing-video {
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TradeWR - Site de Anúncios</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    header {
+      background-color: #0a9f0a;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    main {
+      padding: 40px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .description {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 40px;
+    }
+    .ad-box {
+      width: 100%;
+      max-width: 500px;
+      height: 500px;
+      margin: 0 auto;
+      border: 2px solid green;
+      background-color: rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 16px;
+      color: #666;
+      text-align: center;
+    }
+    footer {
+      text-align: center;
+      margin-top: 60px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
 </head>
 <body>
-    <div id="overlay">
-        <!-- iFrame do AdSense -->
-        <iframe id="ad-frame" src="https://www.seu-site-ads.com" allowfullscreen></iframe>
 
-        <!-- Vídeo de Marketing -->
-        <video id="marketing-video" src="video-promo.mp4" autoplay muted></video>
-    </div>
+<header>TradeWR - Site de Anúncios</header>
 
-    <script>
-        (() => {
-            if (window.__tradeWRInjected) return;
-            window.__tradeWRInjected = true;
+<main>
+  <div class="description">
+    Bem-vindo ao TradeWR. Este site serve como espaço de demonstração para anúncios do Google AdSense. Aqui você encontrará conteúdo simples para validar a exibição de anúncios de forma segura e eficaz.
+  </div>
 
-            const overlay = document.getElementById('overlay');
-            const adFrame = document.getElementById('ad-frame');
-            const marketingVideo = document.getElementById('marketing-video');
+  <div class="ad-box">
+    Espaço reservado para anúncios do Google AdSense.
+  </div>
+</main>
 
-            let adCounter = 0; // Conta quantos anúncios foram exibidos
+<footer>
+  &copy; 2025 TradeWR. Todos os direitos reservados.
+</footer>
 
-            function toggleContent() {
-                adCounter++;
-                // A cada 4 anúncios, mostra o vídeo
-                if (adCounter % 5 === 0) {
-                    adFrame.style.display = 'none';
-                    marketingVideo.style.display = 'block';
-                    marketingVideo.play();
-                    setTimeout(() => {
-                        marketingVideo.pause();
-                        marketingVideo.currentTime = 0;
-                        marketingVideo.style.display = 'none';
-                        adFrame.style.display = 'block';
-                    }, 5000); // vídeo de 5 segundos
-                }
-            }
-
-            // Alterna a cada 10 segundos ou quando quiser implementar lógica de carregamento de novo anúncio
-            setInterval(toggleContent, 10000);
-        })();
-    </script>
 </body>
 </html>
