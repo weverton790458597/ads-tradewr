@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Colaborador</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    .login-container {
+      background-color: #111;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0px 0px 10px rgba(255,255,255,0.1);
+      text-align: center;
+      width: 320px;
+    }
+
+    .logo {
+      margin-bottom: 20px;
+    }
+
+    .logo img {
+      max-width: 150px;
+    }
+
+    h2 {
+      color: #fff;
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      background-color: #222;
+      color: #fff;
+    }
+
+    input:focus {
+      outline: 2px solid #555;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 15px;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <!-- Aqui você coloca sua logo -->
+      <img src="sua-logo.png" alt="Logo">
+    </div>
+    <h2>Login do Colaborador</h2>
+    <form id="loginForm">
+      <input type="text" id="email" placeholder="E-mail" required>
+      <input type="password" id="senha" placeholder="Senha" required>
+      <button type="submit">Entrar</button>
+      <div class="error" id="errorMsg"></div>
+    </form>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById("loginForm");
+    const errorMsg = document.getElementById("errorMsg");
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+
+      try {
+        const response = await fetch("usuarios.json"); // lê o arquivo JSON
+        const usuarios = await response.json();
+
+        const usuarioValido = usuarios.find(
+          (user) => user.email === email && user.senha === senha
+        );
+
+        if (usuarioValido) {
+          window.location.href = "painel.html"; // Redireciona para o painel
+        } else {
+          errorMsg.textContent = "E-mail ou senha inválidos.";
+        }
+      } catch (error) {
+        console.error("Erro ao carregar usuários:", error);
+        errorMsg.textContent = "Erro no sistema. Tente novamente.";
+      }
+    });
+  </script>
+</body>
+</html>
