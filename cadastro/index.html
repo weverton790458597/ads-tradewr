@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - TradeWR</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logocadastro.png">
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -127,7 +127,7 @@
     const cadastrarBtn = document.getElementById('cadastrar');
     const mensagem = document.getElementById('mensagem');
 
-    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyiV0c9Q44f4e_ucOQ69uB6sxKhYadhFuCdxOEnLrHZJ1dRfotf2WnS41jDwIiPmj422g/exec"; // Substitua pelo seu URL do Apps Script
+    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyiV0c9Q44f4e_ucOQ69uB6sxKhYadhFuCdxOEnLrHZJ1dRfotf2WnS41jDwIiPmj422g/exec";
 
     cadastrarBtn.addEventListener('click', () => {
       const nome = nomeInput.value.trim();
@@ -155,7 +155,6 @@
         if (data.success) {
           mensagem.style.color = '#81c784';
           mensagem.textContent = 'Cadastro realizado com sucesso!';
-          // Limpa campos
           nomeInput.value = '';
           emailInput.value = '';
           senhaInput.value = '';
