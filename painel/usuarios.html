@@ -161,9 +161,33 @@
     }
 
     function gerarLink() {
-      alert("Função gerar link ainda não implementada!");
-      // Aqui depois podemos gerar um link único para registro de usuário
-    }
+  fetch("/gerar-link")
+    .then(res => res.json())
+    .then(data => {
+      const linkArea = document.getElementById("linkGerado");
+      linkArea.textContent = data.link;
+
+      // Seleciona automaticamente o link para copiar
+      const range = document.createRange();
+      range.selectNode(linkArea);
+      window.getSelection().removeAllRanges();
+      window.getSelection().addRange(range);
+
+      try {
+        document.execCommand('copy');
+        alert("Link gerado e copiado para a área de transferência!");
+      } catch (err) {
+        alert("Link gerado! Copie manualmente: " + data.link);
+      }
+
+      window.getSelection().removeAllRanges();
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Erro ao gerar link.");
+    });
+}
+
 
     // Carrega a lista quando a página abre
     carregarUsuarios();
