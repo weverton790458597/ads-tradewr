@@ -2,150 +2,172 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Usuários da Extensão</title>
+  <title>Usuários</title>
   <style>
     body {
+      margin: 0;
+      display: flex;
       font-family: Arial, sans-serif;
+      height: 100vh;
       background-color: #121212;
       color: #fff;
-      margin: 0;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #1e1e1e;
       padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    h1 {
-      color: #00d084;
+
+    .sidebar button {
+      padding: 10px;
+      background-color: #00d084;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
     }
+
+    .sidebar button:hover {
+      background-color: #00a361;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
     }
-    table, th, td {
-      border: 1px solid #444;
-    }
-    th, td {
+
+    table th, table td {
       padding: 10px;
+      border-bottom: 1px solid #333;
       text-align: left;
     }
-    th {
-      background-color: #1e1e1e;
+
+    table th {
+      background-color: #00d084;
+      color: #121212;
     }
-    tr:nth-child(even) {
-      background-color: #1a1a1a;
+
+    #novoUsuarioForm {
+      display: none;
+      margin-bottom: 20px;
     }
-    input, button {
+
+    #novoUsuarioForm input {
       padding: 8px;
-      margin: 5px 0;
+      margin-right: 10px;
       border-radius: 6px;
       border: none;
     }
-    input {
-      width: 200px;
-    }
-    button {
+
+    #novoUsuarioForm button {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: none;
       background-color: #00d084;
-      color: #000;
-      font-weight: bold;
+      color: #fff;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #00b06a;
+
+    #novoUsuarioForm button:hover {
+      background-color: #00a361;
     }
   </style>
 </head>
 <body>
 
-<h1>Usuários da Extensão</h1>
+  <div class="sidebar">
+    <button onclick="mostrarFormulario()">Adicionar Novo Usuário</button>
+    <button onclick="gerarLink()">Gerar Link</button>
+    <button onclick="carregarUsuarios()">Atualizar Lista</button>
+  </div>
 
-<div>
-  <h3>Adicionar Novo Usuário</h3>
-  <input type="text" id="nome" placeholder="Nome">
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="senha" placeholder="Senha">
-  <button onclick="adicionarUsuario()">Adicionar</button>
-</div>
+  <div class="content">
+    <div id="novoUsuarioForm">
+      <input type="email" id="emailUsuario" placeholder="Email">
+      <input type="password" id="senhaUsuario" placeholder="Senha">
+      <button onclick="adicionarUsuario()">Adicionar</button>
+    </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Nome</th>
-      <th>Email</th>
-      <th>Senha</th>
-      <th>Data Cadastro</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody id="tabelaUsuarios">
-    <!-- Usuários serão listados aqui -->
-  </tbody>
-</table>
+    <h2>Lista de Usuários</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Senha</th>
+        </tr>
+      </thead>
+      <tbody id="usuariosTabela"></tbody>
+    </table>
+  </div>
 
-<script>
-  // Função para buscar usuários do JSON
-  async function carregarUsuarios() {
-    try {
-      const response = await fetch('usuarios-extensao.json');
-      const data = await response.json();
-      const tabela = document.getElementById('tabelaUsuarios');
-      tabela.innerHTML = '';
+  <script>
+    const URL = "http://localhost:3000/usuarios";
 
-      data.usuariosExtensao.forEach(usuario => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${usuario.nome}</td>
-          <td>${usuario.email}</td>
-          <td>${usuario.senha}</td>
-          <td>${usuario.dataCadastro}</td>
-          <td>${usuario.status}</td>
-        `;
-        tabela.appendChild(row);
-      });
-    } catch (err) {
-      console.error('Erro ao carregar usuários:', err);
-    }
-  }
-
-  // Função para adicionar usuário
-  function adicionarUsuario() {
-    const nome = document.getElementById('nome').value;
-    const email = document.getElementById('email').value;
-    const senha = document.getElementById('senha').value;
-
-    if (!nome || !email || !senha) {
-      alert('Preencha todos os campos!');
-      return;
+    function mostrarFormulario() {
+      const form = document.getElementById("novoUsuarioForm");
+      form.style.display = form.style.display === "none" ? "block" : "none";
     }
 
-    const novoUsuario = {
-      nome: nome,
-      email: email,
-      senha: senha,
-      dataCadastro: new Date().toISOString().split('T')[0],
-      status: 'ativo',
-      plano: 'inicial'
-    };
+    function adicionarUsuario() {
+      const email = document.getElementById("emailUsuario").value;
+      const senha = document.getElementById("senhaUsuario").value;
 
-    // Aqui precisamos salvar no JSON (no backend ou via Node.js)
-    // No momento, só exibiremos no front-end
-    const tabela = document.getElementById('tabelaUsuarios');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${novoUsuario.nome}</td>
-      <td>${novoUsuario.email}</td>
-      <td>${novoUsuario.senha}</td>
-      <td>${novoUsuario.dataCadastro}</td>
-      <td>${novoUsuario.status}</td>
-    `;
-    tabela.appendChild(row);
+      if (!email || !senha) {
+        alert("Preencha todos os campos!");
+        return;
+      }
 
-    // Limpa os campos
-    document.getElementById('nome').value = '';
-    document.getElementById('email').value = '';
-    document.getElementById('senha').value = '';
-  }
+      fetch(URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.sucesso) {
+          alert("Usuário adicionado!");
+          document.getElementById("emailUsuario").value = "";
+          document.getElementById("senhaUsuario").value = "";
+          carregarUsuarios();
+        }
+      })
+      .catch(err => console.error(err));
+    }
 
-  // Carrega os usuários ao abrir a página
-  carregarUsuarios();
-</script>
+    function carregarUsuarios() {
+      fetch(URL)
+        .then(res => res.json())
+        .then(data => {
+          const tbody = document.getElementById("usuariosTabela");
+          tbody.innerHTML = "";
+          data.usuarios.forEach(usuario => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `<td>${usuario.email}</td><td>${usuario.senha}</td>`;
+            tbody.appendChild(tr);
+          });
+        })
+        .catch(err => console.error(err));
+    }
+
+    function gerarLink() {
+      alert("Função gerar link ainda não implementada!");
+      // Aqui depois podemos gerar um link único para registro de usuário
+    }
+
+    // Carrega a lista quando a página abre
+    carregarUsuarios();
+  </script>
 
 </body>
 </html>
