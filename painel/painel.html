@@ -8,10 +8,43 @@
       margin: 0;
       height: 100vh;
       display: flex;
-      flex-direction: column;
-      background-color: #121212;
       font-family: Arial, sans-serif;
+      background-color: #121212;
       color: #fff;
+    }
+
+    /* Barra lateral */
+    .sidebar {
+      width: 220px;
+      background-color: #1e1e1e;
+      display: flex;
+      flex-direction: column;
+      padding-top: 20px;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.5);
+    }
+
+    .sidebar button {
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: #fff;
+      text-align: left;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .sidebar button:hover {
+      background-color: #00d084;
+      color: #121212;
+      font-weight: bold;
+    }
+
+    /* Área principal */
+    .main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
@@ -43,9 +76,11 @@
       background-color: #c0392b;
     }
 
-    main {
+    /* Container do conteúdo dinâmico */
+    #conteudo {
       flex: 1;
       padding: 20px;
+      overflow-y: auto;
     }
 
     .card {
@@ -64,28 +99,39 @@
   </style>
 </head>
 <body>
-  <header>
-    <h1>Painel do Colaborador</h1>
-    <button onclick="logout()">Sair</button>
-  </header>
+  <div class="sidebar">
+    <button onclick="carregarPagina('usuarios.html')">Usuários</button>
+    <button onclick="carregarPagina('pagamentos.html')">Pagamentos</button>
+    <button onclick="carregarPagina('relatorios.html')">Relatórios</button>
+    <button onclick="carregarPagina('configuracoes.html')">Configurações</button>
+    <button onclick="carregarPagina('notificacoes.html')">Notificações</button>
+    <button onclick="carregarPagina('acesso-adm.html')">Acesso ADM</button>
+  </div>
 
-  <main>
-    <div class="card">
-      <h2>Bem-vindo!</h2>
-      <p id="userEmail">Você está logado como: <strong></strong></p>
-    </div>
+  <div class="main-content">
+    <header>
+      <h1>Painel do Colaborador</h1>
+      <button onclick="logout()">Sair</button>
+    </header>
 
-    <div class="card">
-      <h2>Informações da Ferramenta</h2>
-      <p>Aqui você pode visualizar dados internos, relatórios, resultados de trades, ou qualquer outra função que vamos integrar depois.</p>
+    <div id="conteudo">
+      <div class="card">
+        <h2>Bem-vindo!</h2>
+        <p id="userEmail">Você está logado como: <strong></strong></p>
+      </div>
+
+      <div class="card">
+        <h2>Informações da Ferramenta</h2>
+        <p>Aqui você pode visualizar dados internos, relatórios, resultados de trades, ou qualquer outra função que vamos integrar depois.</p>
+      </div>
     </div>
-  </main>
+  </div>
 
   <script>
-    // pega o e-mail do usuário logado (armazenado no login)
+    // Pega o e-mail do usuário logado
     const userEmail = sessionStorage.getItem("usuarioLogado");
     if (!userEmail) {
-      window.location.href = "index.html"; // se não tiver login válido, volta pra tela inicial
+      window.location.href = "index.html";
     } else {
       document.querySelector("#userEmail strong").textContent = userEmail;
     }
@@ -93,6 +139,18 @@
     function logout() {
       sessionStorage.removeItem("usuarioLogado");
       window.location.href = "index.html";
+    }
+
+    // Função para carregar conteúdo dinâmico
+    function carregarPagina(pagina) {
+      fetch(pagina)
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('conteudo').innerHTML = html;
+        })
+        .catch(err => {
+          document.getElementById('conteudo').innerHTML = `<p>Erro ao carregar a página: ${err}</p>`;
+        });
     }
   </script>
 </body>
