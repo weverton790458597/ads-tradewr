@@ -85,14 +85,14 @@
     // pega o e-mail do usuário logado (armazenado no login)
     const userEmail = sessionStorage.getItem("usuarioLogado");
     if (!userEmail) {
-      window.location.href = "login.html"; // se não tiver login válido, volta pra tela inicial
+      window.location.href = "index.html"; // se não tiver login válido, volta pra tela inicial
     } else {
       document.querySelector("#userEmail strong").textContent = userEmail;
     }
 
     function logout() {
       sessionStorage.removeItem("usuarioLogado");
-      window.location.href = "login.html";
+      window.location.href = "index.html";
     }
   </script>
 </body>
