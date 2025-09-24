@@ -93,7 +93,7 @@
 </head>
 <body>
   <div class="sidebar">
-    <button onclick="carregarPagina('usuarios.html')">Usuários</button>
+    <button onclick="carregarPagina('usuarios/')">Usuários</button>
     <button onclick="carregarPagina('pagamentos.html')">Pagamentos</button>
     <button onclick="carregarPagina('relatorios.html')">Relatórios</button>
     <button onclick="carregarPagina('configuracoes.html')">Configurações</button>
@@ -116,7 +116,7 @@
     // Pega o e-mail do usuário logado
     const userEmail = sessionStorage.getItem("usuarioLogado");
     if (!userEmail) {
-      window.location.href = "index.html";
+      window.location.href = "painel/";
     }
 
     function logout() {
