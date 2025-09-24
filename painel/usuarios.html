@@ -38,8 +38,14 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynl7AivfZ1N4A6Yo56bsdoBhCigq4QBgDexAE3OlOQa3FZbFzo6EOPRjdsrKjrDeGfng/exec";
 
+    // Sanitiza e-mail para usar como ID
     function sanitizeId(email) {
       return email.replace(/[@.]/g, "_");
+    }
+
+    // Função de inicialização específica desta página
+    function initUsuarios() {
+      carregarUsuarios();
     }
 
     async function carregarUsuarios() {
@@ -52,6 +58,7 @@
         const tr = document.createElement("tr");
         tr.className = u["Situação financeira"] === "Atrasado" ? "atrasado" : "pago";
         const idSafe = sanitizeId(u.Email);
+
         tr.innerHTML = `
           <td>${u.Nome}</td>
           <td>${u.Email}</td>
@@ -102,11 +109,6 @@
 
       const data = await res.json();
       alert(data.success ? data.message : data.message);
-      carregarUsuarios();
-    }
-
-    // Função de inicialização chamada pelo painel após injeção
-    function initUsuarios() {
       carregarUsuarios();
     }
   </script>
