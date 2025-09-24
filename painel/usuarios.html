@@ -1,128 +1,100 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel de Usuários - TradeWR</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #1e1e1e;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .painel-container {
-      width: 100%;
-      max-width: 800px;
-      background-color: #2c2c2c;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-    }
-
-    h2 {
-      color: #81c784;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #444;
-      text-align: left;
-    }
-
-    th {
-      background-color: #3a3a3a;
-    }
-
-    .mensagem {
-      margin: 15px 0;
-      text-align: center;
-      color: #81c784;
-      font-size: 14px;
-    }
-
-    .erro {
-      color: red;
-    }
-
-    @media (max-width: 600px) {
-      th, td {
-        padding: 8px;
-        font-size: 13px;
-      }
-    }
-  </style>
+<meta charset="utf-8"/>
+<title>Test Fetch - Raw</title>
 </head>
 <body>
-  <div class="painel-container">
-    <h2>Painel de Usuários</h2>
-    <div class="mensagem" id="status">Carregando usuários...</div>
-    <table id="tabelaUsuarios">
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>E-mail</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- Linhas vão ser preenchidas dinamicamente -->
-      </tbody>
-    </table>
+  <h2>Teste CRU - Buscar usuários (troque a URL abaixo)</h2>
+
+  <!-- 1) Cole aqui o URL do seu Apps Script (sem ?action se quiser, ou com ?action=listar) -->
+  <div>
+    <label for="url">Apps Script URL:</label><br/>
+    <input id="url" style="width:90%" value="https://script.google.com/macros/s/AKfycbyfi4t5y5yb7ETOj0NcjS_RMTMgguKLYXZ21gyxAfUFpgsHI2Z7RLUI8G0aoESjN3s8/exec?action=listar"/>
   </div>
 
+  <div style="margin-top:10px;">
+    <button id="btn">Buscar dados (fetch)</button>
+    <button id="btnFetchNoCache">Buscar sem cache</button>
+  </div>
+
+  <h3>Status</h3>
+  <div id="status">Aguardando ação...</div>
+
+  <h3>JSON bruto recebido</h3>
+  <pre id="raw" style="background:#111;color:#bada55;padding:10px;max-height:300px;overflow:auto;"></pre>
+
+  <h3>Render simples (linhas)</h3>
+  <div id="list"></div>
+
   <script>
-    const tabela = document.getElementById('tabelaUsuarios').querySelector('tbody');
+    const btn = document.getElementById('btn');
+    const btnNoCache = document.getElementById('btnFetchNoCache');
+    const raw = document.getElementById('raw');
     const status = document.getElementById('status');
+    const inputUrl = document.getElementById('url');
+    const list = document.getElementById('list');
 
-    // Substitua pela sua URL publicada corretamente
-    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyfi4t5y5yb7ETOj0NcjS_RMTMgguKLYXZ21gyxAfUFpgsHI2Z7RLUI8G0aoESjN3s8/exec?action=listar";
+    async function doFetch(noCache=false) {
+      const url = inputUrl.value.trim();
+      if (!url) { status.textContent = 'Coloque a URL do Apps Script primeiro.'; return; }
 
-    async function carregarUsuarios() {
-      status.textContent = 'Carregando usuários...';
+      status.textContent = 'Fetching...';
+      raw.textContent = '';
+      list.innerHTML = '';
+
       try {
-        const res = await fetch(SHEET_API_URL);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+        const fetchUrl = noCache ? (url + (url.includes('?') ? '&' : '?') + '_=' + Date.now()) : url;
+        console.log('Fetching URL:', fetchUrl);
 
-        // Log para debug no console
-        console.log("Resposta recebida:", data);
+        const res = await fetch(fetchUrl, { method: 'GET', cache: 'no-store' });
+        console.log('fetch ok, status', res.status);
 
-        if ((data.success === true || data.success === "true") && Array.isArray(data.usuarios)) {
-          tabela.innerHTML = ''; // Limpa tabela
-          if (data.usuarios.length === 0) {
-            status.textContent = 'Nenhum usuário cadastrado.';
-            return;
-          }
+        const txt = await res.text();
+        // mostra texto cru sempre
+        raw.textContent = txt;
 
-          data.usuarios.forEach(usuario => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${usuario.nome}</td><td>${usuario.email}</td>`;
-            tabela.appendChild(tr);
-          });
-          status.textContent = ''; // Remove mensagem de carregando
-        } else {
-          status.textContent = data.message || 'Erro ao carregar usuários.';
-          status.classList.add('erro');
+        // tenta parsear JSON
+        let data;
+        try { data = JSON.parse(txt); }
+        catch(parseErr) {
+          console.error('Erro parse JSON:', parseErr);
+          status.textContent = 'Recebido mas não é JSON válido (ver raw).';
+          return;
         }
+
+        // se veio success e usuarios, renderiza simples
+        if ((data.success === true || data.success === "true") && Array.isArray(data.usuarios)) {
+          status.textContent = 'Recebido JSON com data.usuarios — renderizando...';
+          // montar lista simples
+          const ul = document.createElement('div');
+          ul.innerHTML = '<b>Total:</b> ' + data.usuarios.length + '<br/>';
+          data.usuarios.forEach((u, i) => {
+            // mostra todas as chaves de cada usuário
+            const div = document.createElement('div');
+            div.style = 'padding:6px;border-bottom:1px solid #333;';
+            let content = '<b>#' + (i+1) + '</b> ';
+            for (const k in u) {
+              content += `${k}: ${u[k]} &nbsp; `;
+            }
+            div.innerHTML = content;
+            ul.appendChild(div);
+          });
+          list.appendChild(ul);
+        } else {
+          status.textContent = 'JSON recebido, mas formato inesperado. Veja raw para detalhes.';
+          console.log('Objeto recebido:', data);
+        }
+
       } catch (err) {
-        console.error("Erro no fetch:", err);
-        status.textContent = 'Erro ao conectar com a planilha. Verifique publicação e URL.';
-        status.classList.add('erro');
+        console.error('Erro no fetch:', err);
+        status.textContent = 'Erro no fetch — veja console (F12) para detalhes. Possível CORS / URL errada / deploy não público.';
+        raw.textContent = String(err);
       }
     }
 
-    window.addEventListener('DOMContentLoaded', carregarUsuarios);
+    btn.addEventListener('click', () => doFetch(false));
+    btnNoCache.addEventListener('click', () => doFetch(true));
   </script>
 </body>
 </html>
