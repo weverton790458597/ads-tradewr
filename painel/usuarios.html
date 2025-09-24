@@ -85,7 +85,7 @@
     const tabela = document.getElementById('tabelaUsuarios').querySelector('tbody');
     const status = document.getElementById('status');
 
-    // ⚡ Troque pelo link do seu Apps Script já implantado
+    // Substitua pela sua URL publicada corretamente
     const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyfi4t5y5yb7ETOj0NcjS_RMTMgguKLYXZ21gyxAfUFpgsHI2Z7RLUI8G0aoESjN3s8/exec?action=listar";
 
     async function carregarUsuarios() {
@@ -95,8 +95,10 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
-        // 🚀 Aqui garantimos que estamos acessando "data.usuarios"
-        if (data.success && Array.isArray(data.usuarios)) {
+        // Log para debug no console
+        console.log("Resposta recebida:", data);
+
+        if ((data.success === true || data.success === "true") && Array.isArray(data.usuarios)) {
           tabela.innerHTML = ''; // Limpa tabela
           if (data.usuarios.length === 0) {
             status.textContent = 'Nenhum usuário cadastrado.';
@@ -109,13 +111,12 @@
             tabela.appendChild(tr);
           });
           status.textContent = ''; // Remove mensagem de carregando
-          status.classList.remove('erro');
         } else {
           status.textContent = data.message || 'Erro ao carregar usuários.';
           status.classList.add('erro');
         }
       } catch (err) {
-        console.error(err);
+        console.error("Erro no fetch:", err);
         status.textContent = 'Erro ao conectar com a planilha. Verifique publicação e URL.';
         status.classList.add('erro');
       }
