@@ -141,17 +141,29 @@
       window.location.href = "index.html";
     }
 
-    // Função para carregar conteúdo dinâmico
-    function carregarPagina(pagina) {
-      fetch(pagina)
-        .then(response => response.text())
-        .then(html => {
-          document.getElementById('conteudo').innerHTML = html;
-        })
-        .catch(err => {
-          document.getElementById('conteudo').innerHTML = `<p>Erro ao carregar a página: ${err}</p>`;
-        });
-    }
+  // Função para carregar conteúdo dinâmico de forma genérica
+function carregarPagina(pagina) {
+  fetch(pagina)
+    .then(response => response.text())
+    .then(html => {
+      const container = document.getElementById('conteudo');
+      container.innerHTML = html;
+
+      // Tenta descobrir o nome da função init dinamicamente
+      const nomeArquivo = pagina.split("/").pop().split(".")[0]; // ex: usuarios.html -> usuarios
+      const funcInit = `init${nomeArquivo.charAt(0).toUpperCase() + nomeArquivo.slice(1)}`;
+
+      if (typeof window[funcInit] === "function") {
+        window[funcInit]();
+      } else {
+        console.log(`Nenhuma função de inicialização (${funcInit}) encontrada.`);
+      }
+    })
+    .catch(err => {
+      document.getElementById('conteudo').innerHTML = `<p>Erro ao carregar a página: ${err}</p>`;
+    });
+}
+    
   </script>
 </body>
 </html>
