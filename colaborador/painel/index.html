@@ -116,12 +116,12 @@
     // Pega o e-mail do usuário logado
     const userEmail = sessionStorage.getItem("usuarioLogado");
     if (!userEmail) {
-      window.location.href = "painel/";
+      window.location.href = "colaborador/";
     }
 
     function logout() {
       sessionStorage.removeItem("usuarioLogado");
-      window.location.href = "/painel/";
+      window.location.href = "/colaborador/";
     }
 
     // Função para carregar páginas no iframe
