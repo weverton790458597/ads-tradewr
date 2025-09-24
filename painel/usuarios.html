@@ -38,6 +38,10 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynl7AivfZ1N4A6Yo56bsdoBhCigq4QBgDexAE3OlOQa3FZbFzo6EOPRjdsrKjrDeGfng/exec";
 
+    function sanitizeId(email) {
+      return email.replace(/[@.]/g, "_");
+    }
+
     async function carregarUsuarios() {
       const res = await fetch(`${SCRIPT_URL}?action=listarPainel`);
       const data = await res.json();
@@ -47,13 +51,14 @@
       data.usuarios.forEach(u => {
         const tr = document.createElement("tr");
         tr.className = u["Situação financeira"] === "Atrasado" ? "atrasado" : "pago";
+        const idSafe = sanitizeId(u.Email);
         tr.innerHTML = `
           <td>${u.Nome}</td>
           <td>${u.Email}</td>
-          <td><input type="text" value="${u.Status || ""}" id="status-${u.Email}"></td>
-          <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${u.Email}"></td>
+          <td><input type="text" value="${u.Status || ""}" id="status-${idSafe}"></td>
+          <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${idSafe}"></td>
           <td>${u.Ativo || "Não"}</td>
-          <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${u.Email}"></td>
+          <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${idSafe}"></td>
           <td>${u["Próximo vencimento"] || ""}</td>
           <td>${u["Situação financeira"] || ""}</td>
           <td>${u["Receita acumulada"] || 0}</td>
@@ -78,9 +83,10 @@
     }
 
     async function atualizarUsuario(email) {
-      const status = document.getElementById(`status-${email}`).value;
-      const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
-      const ultimo = document.getElementById(`ultimo-${email}`).value;
+      const idSafe = sanitizeId(email);
+      const status = document.getElementById(`status-${idSafe}`).value;
+      const mensalidade = parseFloat(document.getElementById(`mensalidade-${idSafe}`).value) || 0;
+      const ultimo = document.getElementById(`ultimo-${idSafe}`).value;
 
       const res = await fetch(SCRIPT_URL, {
         method: "POST",
@@ -99,8 +105,10 @@
       carregarUsuarios();
     }
 
-    // Inicializa a tabela
-    carregarUsuarios();
+    // Função de inicialização chamada pelo painel após injeção
+    function initUsuarios() {
+      carregarUsuarios();
+    }
   </script>
 </body>
 </html>
