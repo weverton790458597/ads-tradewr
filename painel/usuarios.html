@@ -2,28 +2,110 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Teste Usuários - TradeWR</title>
+  <title>Painel de Usuários</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #f4f4f4; }
+    button { margin-right: 5px; }
+    .senha { font-family: monospace; }
+  </style>
 </head>
 <body>
-  <h2>Usuários cadastrados:</h2>
-  <pre id="jsonOutput">Carregando...</pre>
+  <h2>Gerenciamento de Usuários</h2>
+  <table id="usuariosTable">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Senha</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
   <script>
-    const output = document.getElementById('jsonOutput');
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbwsdEsBd7mk_5Owm-BVihocqC1FKErAdHIswXj2yITLJdMTfPobFGgH6Ej-Y0NTaKYbKA/exec"; 
+    const ADMIN_PASSWORD = "7904"; // senha mestra pra ver as senhas
 
-    // Coloque aqui o link do seu Web App do Apps Script
-    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyfi4t5y5yb7ETOj0NcjS_RMTMgguKLYXZ21gyxAfUFpgsHI2Z7RLUI8G0aoESjN3s8/exec?action=listar";
+    async function carregarUsuarios() {
+      const res = await fetch(`${API_ENDPOINT}?action=listar`);
+      const usuarios = await res.json();
 
-    fetch(SHEET_API_URL)
-      .then(res => res.json())
-      .then(data => {
-        // Exibe o JSON bruto na tela
-        output.textContent = JSON.stringify(data, null, 2);
-      })
-      .catch(err => {
-        output.textContent = "Erro ao buscar dados:\n" + err;
-        console.error(err);
+      const tbody = document.querySelector("#usuariosTable tbody");
+      tbody.innerHTML = "";
+
+      usuarios.forEach(user => {
+        const tr = document.createElement("tr");
+
+        // Nome
+        tr.innerHTML += `<td>${user.nome}</td>`;
+
+        // Email
+        tr.innerHTML += `<td>${user.email}</td>`;
+
+        // Senha mascarada + olhinho
+        tr.innerHTML += `
+          <td class="senha">
+            <span id="senha-${user.email}">••••••••</span>
+            <button onclick="verSenha('${user.email}', '${user.senha}')">👁️</button>
+          </td>`;
+
+        // Status
+        tr.innerHTML += `<td>${user.status}</td>`;
+
+        // Ações
+        tr.innerHTML += `
+          <td>
+            <button onclick="editarUsuario('${user.email}')">✏️ Editar</button>
+            <button onclick="deletarUsuario('${user.email}')">🗑️ Deletar</button>
+            <button onclick="toggleUsuario('${user.email}')">
+              ${user.status === "blocked" ? "✅ Desbloquear" : "⛔ Bloquear"}
+            </button>
+          </td>
+        `;
+
+        tbody.appendChild(tr);
       });
+    }
+
+    function verSenha(email, senha) {
+      const input = prompt("Digite a senha de administrador:");
+      if (input === ADMIN_PASSWORD) {
+        document.getElementById(`senha-${email}`).textContent = senha;
+      } else {
+        alert("Senha incorreta!");
+      }
+    }
+
+    async function editarUsuario(email) {
+      const novoNome = prompt("Novo nome (deixe vazio pra não alterar):");
+      const novaSenha = prompt("Nova senha (deixe vazio pra não alterar):");
+      const res = await fetch(`${API_ENDPOINT}?action=atualizar&email=${encodeURIComponent(email)}&nome=${encodeURIComponent(novoNome)}&senha=${encodeURIComponent(novaSenha)}`, { method: "POST" });
+      const result = await res.json();
+      alert(result.message);
+      carregarUsuarios();
+    }
+
+    async function deletarUsuario(email) {
+      if (!confirm("Tem certeza que deseja deletar este usuário?")) return;
+      const res = await fetch(`${API_ENDPOINT}?action=deletar&email=${encodeURIComponent(email)}`, { method: "POST" });
+      const result = await res.json();
+      alert(result.message);
+      carregarUsuarios();
+    }
+
+    async function toggleUsuario(email) {
+      const res = await fetch(`${API_ENDPOINT}?action=toggle&email=${encodeURIComponent(email)}`, { method: "POST" });
+      const result = await res.json();
+      alert("Novo status: " + result.status);
+      carregarUsuarios();
+    }
+
+    carregarUsuarios();
   </script>
 </body>
 </html>
