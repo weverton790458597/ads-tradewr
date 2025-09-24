@@ -8,7 +8,7 @@
     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     th { background: #f4f4f4; }
-    button { margin-right: 5px; }
+    button { margin-right: 5px; cursor: pointer; }
     .senha { font-family: monospace; }
   </style>
 </head>
@@ -17,6 +17,7 @@
   <table id="usuariosTable">
     <thead>
       <tr>
+        <th>ID</th>
         <th>Nome</th>
         <th>Email</th>
         <th>Senha</th>
@@ -28,54 +29,61 @@
   </table>
 
   <script>
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbwsdEsBd7mk_5Owm-BVihocqC1FKErAdHIswXj2yITLJdMTfPobFGgH6Ej-Y0NTaKYbKA/exec?action=listar"; 
-    const ADMIN_PASSWORD = "7904"; // senha mestra pra ver as senhas
+    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbwsdEsBd7mk_5Owm-BVihocqC1FKErAdHIswXj2yITLJdMTfPobFGgH6Ej-Y0NTaKYbKA/exec"; 
+    const ADMIN_PASSWORD = "1234"; // senha mestra pra ver as senhas
 
     async function carregarUsuarios() {
-      const res = await fetch(`${API_ENDPOINT}?action=listar`);
-      const usuarios = await res.json();
+      try {
+        const res = await fetch(`${API_ENDPOINT}?action=listar`);
+        const data = await res.json();
 
-      const tbody = document.querySelector("#usuariosTable tbody");
-      tbody.innerHTML = "";
+        if (!data.success) {
+          alert("Erro ao carregar usuários");
+          return;
+        }
 
-      usuarios.forEach(user => {
-        const tr = document.createElement("tr");
+        const usuarios = data.usuarios;
+        const tbody = document.querySelector("#usuariosTable tbody");
+        tbody.innerHTML = "";
 
-        // Nome
-        tr.innerHTML += `<td>${user.nome}</td>`;
+        usuarios.forEach(user => {
+          const tr = document.createElement("tr");
 
-        // Email
-        tr.innerHTML += `<td>${user.email}</td>`;
+          tr.innerHTML += `<td>${user.id || ""}</td>`;
+          tr.innerHTML += `<td>${user.nome || ""}</td>`;
+          tr.innerHTML += `<td>${user.email || ""}</td>`;
 
-        // Senha mascarada + olhinho
-        tr.innerHTML += `
-          <td class="senha">
-            <span id="senha-${user.email}">••••••••</span>
-            <button onclick="verSenha('${user.email}', '${user.senha}')">👁️</button>
-          </td>`;
+          // Senha mascarada + olhinho
+          tr.innerHTML += `
+            <td class="senha">
+              <span id="senha-${user.id}">••••••••</span>
+              <button onclick="verSenha('${user.id}', '${user.senha}')">👁️</button>
+            </td>`;
 
-        // Status
-        tr.innerHTML += `<td>${user.status}</td>`;
+          tr.innerHTML += `<td>${user.status || "active"}</td>`;
 
-        // Ações
-        tr.innerHTML += `
-          <td>
-            <button onclick="editarUsuario('${user.email}')">✏️ Editar</button>
-            <button onclick="deletarUsuario('${user.email}')">🗑️ Deletar</button>
-            <button onclick="toggleUsuario('${user.email}')">
-              ${user.status === "blocked" ? "✅ Desbloquear" : "⛔ Bloquear"}
-            </button>
-          </td>
-        `;
+          tr.innerHTML += `
+            <td>
+              <button onclick="editarUsuario('${user.email}')">✏️ Editar</button>
+              <button onclick="deletarUsuario('${user.email}')">🗑️ Deletar</button>
+              <button onclick="toggleUsuario('${user.email}')">
+                ${user.status === "blocked" ? "✅ Desbloquear" : "⛔ Bloquear"}
+              </button>
+            </td>
+          `;
 
-        tbody.appendChild(tr);
-      });
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        alert("Erro na conexão com o servidor");
+        console.error(err);
+      }
     }
 
-    function verSenha(email, senha) {
+    function verSenha(id, senha) {
       const input = prompt("Digite a senha de administrador:");
       if (input === ADMIN_PASSWORD) {
-        document.getElementById(`senha-${email}`).textContent = senha;
+        document.getElementById(`senha-${id}`).textContent = senha;
       } else {
         alert("Senha incorreta!");
       }
