@@ -85,7 +85,8 @@
     const tabela = document.getElementById('tabelaUsuarios').querySelector('tbody');
     const status = document.getElementById('status');
 
-    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyfi4t5y5yb7ETOj0NcjS_RMTMgguKLYXZ21gyxAfUFpgsHI2Z7RLUI8G0aoESjN3s8/exec?action=listar"; // Coloque seu URL correto aqui
+    // ⚡ Troque pelo link do seu Apps Script já implantado
+    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyfi4t5y5yb7ETOj0NcjS_RMTMgguKLYXZ21gyxAfUFpgsHI2Z7RLUI8G0aoESjN3s8/exec?action=listar";
 
     async function carregarUsuarios() {
       status.textContent = 'Carregando usuários...';
@@ -94,6 +95,7 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
 
+        // 🚀 Aqui garantimos que estamos acessando "data.usuarios"
         if (data.success && Array.isArray(data.usuarios)) {
           tabela.innerHTML = ''; // Limpa tabela
           if (data.usuarios.length === 0) {
@@ -107,6 +109,7 @@
             tabela.appendChild(tr);
           });
           status.textContent = ''; // Remove mensagem de carregando
+          status.classList.remove('erro');
         } else {
           status.textContent = data.message || 'Erro ao carregar usuários.';
           status.classList.add('erro');
