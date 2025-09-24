@@ -108,7 +108,7 @@
 
         if (usuarioValido) {
           sessionStorage.setItem("usuarioLogado", usuarioValido.email);
-          window.location.href = "colaborador/"; // Redireciona para o painel
+          window.location.href = "painel/"; // Redireciona para o painel
         } else {
           errorMsg.textContent = "E-mail ou senha inválidos.";
         }
