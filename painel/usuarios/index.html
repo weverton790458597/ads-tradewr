@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Usuários</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; }
+    input { width: 80px; }
+    button { padding: 4px 8px; cursor: pointer; margin-right: 4px; }
+    .atrasado { background-color: #ffd6d6; }
+    .pago { background-color: #d6ffd6; }
+  </style>
+</head>
+<body>
+  <h1>Painel de Usuários</h1>
+
+  <table id="usuariosTable">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Mensalidade</th>
+        <th>Ativo</th>
+        <th>Data do último pagamento</th>
+        <th>Próximo vencimento</th>
+        <th>Situação financeira</th>
+        <th>Receita acumulada</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynl7AivfZ1N4A6Yo56bsdoBhCigq4QBgDexAE3OlOQa3FZbFzo6EOPRjdsrKjrDeGfng/exec";
+
+    async function carregarUsuarios() {
+      const res = await fetch(`${SCRIPT_URL}?action=listarPainel`);
+      const data = await res.json();
+      const tbody = document.querySelector("#usuariosTable tbody");
+      tbody.innerHTML = "";
+
+      data.usuarios.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.className = u["Situação financeira"] === "Atrasado" ? "atrasado" : "pago";
+        tr.innerHTML = `
+          <td>${u.Nome}</td>
+          <td>${u.Email}</td>
+          <td><input type="text" value="${u.Status || ""}" id="status-${u.Email}"></td>
+          <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${u.Email}"></td>
+          <td>${u.Ativo || "Não"}</td>
+          <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${u.Email}"></td>
+          <td>${u["Próximo vencimento"] || ""}</td>
+          <td>${u["Situação financeira"] || ""}</td>
+          <td>${u["Receita acumulada"] || 0}</td>
+          <td>
+            <button onclick="toggleAtivo('${u.Email}')">Ativar/Desativar</button>
+            <button onclick="atualizarUsuario('${u.Email}')">Salvar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function toggleAtivo(email) {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "toggleAtivo", email }),
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      alert(data.success ? `Novo status: ${data.novoValor}` : data.message);
+      carregarUsuarios();
+    }
+
+    async function atualizarUsuario(email) {
+      const status = document.getElementById(`status-${email}`).value;
+      const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
+      const ultimo = document.getElementById(`ultimo-${email}`).value;
+
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ 
+          action: "updatePainel", 
+          email, 
+          Status: status, 
+          Mensalidade: mensalidade,
+          "Data do último pagamento": ultimo 
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const data = await res.json();
+      alert(data.success ? data.message : data.message);
+      carregarUsuarios();
+    }
+
+    // Inicializa a tabela
+    carregarUsuarios();
+  </script>
+</body>
+</html>
