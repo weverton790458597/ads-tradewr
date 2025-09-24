@@ -1,27 +1,34 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html>
 <head>
   <meta charset="UTF-8">
   <title>Painel de Usuários</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background: #f4f4f4; }
-    button { margin-right: 5px; cursor: pointer; }
-    .senha { font-family: monospace; }
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f4f4f4; }
+    input { width: 80px; }
+    button { padding: 4px 8px; cursor: pointer; margin-right: 4px; }
+    .atrasado { background-color: #ffd6d6; }
+    .pago { background-color: #d6ffd6; }
   </style>
 </head>
 <body>
-  <h2>Gerenciamento de Usuários</h2>
+  <h1>Painel de Usuários</h1>
+
   <table id="usuariosTable">
     <thead>
       <tr>
-        <th>ID</th>
         <th>Nome</th>
         <th>Email</th>
-        <th>Senha</th>
         <th>Status</th>
+        <th>Mensalidade</th>
+        <th>Ativo</th>
+        <th>Data do último pagamento</th>
+        <th>Próximo vencimento</th>
+        <th>Situação financeira</th>
+        <th>Receita acumulada</th>
         <th>Ações</th>
       </tr>
     </thead>
@@ -29,91 +36,70 @@
   </table>
 
   <script>
-    const API_ENDPOINT = "https://script.google.com/macros/s/AKfycbzWUEKcJFD-WrxKs2YAvN_kQpj_hZAXOLrD008lkbuztO114-2HZlNoKonk3qakZsXlRg/exec?action=listar"; 
-    const ADMIN_PASSWORD = "1234"; // senha mestra pra ver as senhas
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynl7AivfZ1N4A6Yo56bsdoBhCigq4QBgDexAE3OlOQa3FZbFzo6EOPRjdsrKjrDeGfng/exec";
 
     async function carregarUsuarios() {
-      try {
-        const res = await fetch(`${API_ENDPOINT}?action=listar`);
-        const data = await res.json();
+      const res = await fetch(`${SCRIPT_URL}?action=listarPainel`);
+      const data = await res.json();
+      const tbody = document.querySelector("#usuariosTable tbody");
+      tbody.innerHTML = "";
 
-        if (!data.success) {
-          alert("Erro ao carregar usuários");
-          return;
-        }
-
-        const usuarios = data.usuarios;
-        const tbody = document.querySelector("#usuariosTable tbody");
-        tbody.innerHTML = "";
-
-        usuarios.forEach(user => {
-          const tr = document.createElement("tr");
-
-          tr.innerHTML += `<td>${user.id || ""}</td>`;
-          tr.innerHTML += `<td>${user.nome || ""}</td>`;
-          tr.innerHTML += `<td>${user.email || ""}</td>`;
-
-          // Senha mascarada + olhinho
-          tr.innerHTML += `
-            <td class="senha">
-              <span id="senha-${user.id}">••••••••</span>
-              <button onclick="verSenha('${user.id}', '${user.senha}')">👁️</button>
-            </td>`;
-
-          tr.innerHTML += `<td>${user.status || "active"}</td>`;
-
-          tr.innerHTML += `
-            <td>
-              <button onclick="editarUsuario('${user.email}')">✏️ Editar</button>
-              <button onclick="deletarUsuario('${user.email}')">🗑️ Deletar</button>
-              <button onclick="toggleUsuario('${user.email}')">
-                ${user.status === "blocked" ? "✅ Desbloquear" : "⛔ Bloquear"}
-              </button>
-            </td>
-          `;
-
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        alert("Erro na conexão com o servidor");
-        console.error(err);
-      }
+      data.usuarios.forEach(u => {
+        const tr = document.createElement("tr");
+        tr.className = u["Situação financeira"] === "Atrasado" ? "atrasado" : "pago";
+        tr.innerHTML = `
+          <td>${u.Nome}</td>
+          <td>${u.Email}</td>
+          <td><input type="text" value="${u.Status || ""}" id="status-${u.Email}"></td>
+          <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${u.Email}"></td>
+          <td>${u.Ativo || "Não"}</td>
+          <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${u.Email}"></td>
+          <td>${u["Próximo vencimento"] || ""}</td>
+          <td>${u["Situação financeira"] || ""}</td>
+          <td>${u["Receita acumulada"] || 0}</td>
+          <td>
+            <button onclick="toggleAtivo('${u.Email}')">Ativar/Desativar</button>
+            <button onclick="atualizarUsuario('${u.Email}')">Salvar</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
-    function verSenha(id, senha) {
-      const input = prompt("Digite a senha de administrador:");
-      if (input === ADMIN_PASSWORD) {
-        document.getElementById(`senha-${id}`).textContent = senha;
-      } else {
-        alert("Senha incorreta!");
-      }
-    }
-
-    async function editarUsuario(email) {
-      const novoNome = prompt("Novo nome (deixe vazio pra não alterar):");
-      const novaSenha = prompt("Nova senha (deixe vazio pra não alterar):");
-      const res = await fetch(`${API_ENDPOINT}?action=atualizar&email=${encodeURIComponent(email)}&nome=${encodeURIComponent(novoNome)}&senha=${encodeURIComponent(novaSenha)}`, { method: "POST" });
-      const result = await res.json();
-      alert(result.message);
+    async function toggleAtivo(email) {
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ action: "toggleAtivo", email }),
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+      alert(data.success ? `Novo status: ${data.novoValor}` : data.message);
       carregarUsuarios();
     }
 
-    async function deletarUsuario(email) {
-      if (!confirm("Tem certeza que deseja deletar este usuário?")) return;
-      const res = await fetch(`${API_ENDPOINT}?action=deletar&email=${encodeURIComponent(email)}`, { method: "POST" });
-      const result = await res.json();
-      alert(result.message);
+    async function atualizarUsuario(email) {
+      const status = document.getElementById(`status-${email}`).value;
+      const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
+      const ultimo = document.getElementById(`ultimo-${email}`).value;
+
+      const res = await fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({ 
+          action: "updatePainel", 
+          email, 
+          Status: status, 
+          Mensalidade: mensalidade,
+          "Data do último pagamento": ultimo 
+        }),
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const data = await res.json();
+      alert(data.success ? data.message : data.message);
       carregarUsuarios();
     }
 
-    async function toggleUsuario(email) {
-      const res = await fetch(`${API_ENDPOINT}?action=toggle&email=${encodeURIComponent(email)}`, { method: "POST" });
-      const result = await res.json();
-      alert("Novo status: " + result.status);
-      carregarUsuarios();
-    }
-
-    // Carrega os usuários assim que a página abrir
+    // Inicializa a tabela
     carregarUsuarios();
   </script>
 </body>
