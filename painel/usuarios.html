@@ -15,7 +15,7 @@
   </style>
 </head>
 <body>
-  <h1>Painel de Usuários teste</h1>
+  <h1>Painel de Usuários</h1>
 
   <table id="usuariosTable">
     <thead>
@@ -38,16 +38,6 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynl7AivfZ1N4A6Yo56bsdoBhCigq4QBgDexAE3OlOQa3FZbFzo6EOPRjdsrKjrDeGfng/exec";
 
-    // Sanitiza e-mail para usar como ID
-    function sanitizeId(email) {
-      return email.replace(/[@.]/g, "_");
-    }
-
-    // Função de inicialização específica desta página
-    function initUsuarios() {
-      carregarUsuarios();
-    }
-
     async function carregarUsuarios() {
       const res = await fetch(`${SCRIPT_URL}?action=listarPainel`);
       const data = await res.json();
@@ -57,15 +47,13 @@
       data.usuarios.forEach(u => {
         const tr = document.createElement("tr");
         tr.className = u["Situação financeira"] === "Atrasado" ? "atrasado" : "pago";
-        const idSafe = sanitizeId(u.Email);
-
         tr.innerHTML = `
           <td>${u.Nome}</td>
           <td>${u.Email}</td>
-          <td><input type="text" value="${u.Status || ""}" id="status-${idSafe}"></td>
-          <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${idSafe}"></td>
+          <td><input type="text" value="${u.Status || ""}" id="status-${u.Email}"></td>
+          <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${u.Email}"></td>
           <td>${u.Ativo || "Não"}</td>
-          <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${idSafe}"></td>
+          <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${u.Email}"></td>
           <td>${u["Próximo vencimento"] || ""}</td>
           <td>${u["Situação financeira"] || ""}</td>
           <td>${u["Receita acumulada"] || 0}</td>
@@ -90,10 +78,9 @@
     }
 
     async function atualizarUsuario(email) {
-      const idSafe = sanitizeId(email);
-      const status = document.getElementById(`status-${idSafe}`).value;
-      const mensalidade = parseFloat(document.getElementById(`mensalidade-${idSafe}`).value) || 0;
-      const ultimo = document.getElementById(`ultimo-${idSafe}`).value;
+      const status = document.getElementById(`status-${email}`).value;
+      const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
+      const ultimo = document.getElementById(`ultimo-${email}`).value;
 
       const res = await fetch(SCRIPT_URL, {
         method: "POST",
@@ -111,6 +98,9 @@
       alert(data.success ? data.message : data.message);
       carregarUsuarios();
     }
+
+    // Inicializa a tabela
+    carregarUsuarios();
   </script>
 </body>
 </html>
