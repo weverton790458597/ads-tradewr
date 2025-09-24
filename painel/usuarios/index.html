@@ -36,8 +36,9 @@
   </table>
 
   <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbynl7AivfZ1N4A6Yo56bsdoBhCigq4QBgDexAE3OlOQa3FZbFzo6EOPRjdsrKjrDeGfng/exec";
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwjMzZbs4aimguiD9LgsGI8Wa4fODvClqnoFnFOvPQ3LoIsGZidavFQv3lRJFDa0NlQbQ/exec";
 
+    // Carrega todos os usuários do painel
     async function carregarUsuarios() {
       const res = await fetch(`${SCRIPT_URL}?action=listarPainel`);
       const data = await res.json();
@@ -66,6 +67,7 @@
       });
     }
 
+    // Alterna o status Ativo do usuário
     async function toggleAtivo(email) {
       const res = await fetch(SCRIPT_URL, {
         method: "POST",
@@ -77,6 +79,7 @@
       carregarUsuarios();
     }
 
+    // Atualiza dados do usuário no painel
     async function atualizarUsuario(email) {
       const status = document.getElementById(`status-${email}`).value;
       const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
@@ -99,7 +102,7 @@
       carregarUsuarios();
     }
 
-    // Inicializa a tabela
+    // Inicializa a tabela automaticamente
     carregarUsuarios();
   </script>
 </body>
