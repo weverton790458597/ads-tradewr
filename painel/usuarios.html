@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Usuários</title>
+  <title>Painel de Usuários</title>
   <style>
     body {
       margin: 0;
@@ -45,6 +45,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-bottom: 20px;
     }
 
     table th, table td {
@@ -56,6 +57,33 @@
     table th {
       background-color: #00d084;
       color: #121212;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #00d084;
+      font-size: 16px;
+    }
+
+    .panel-detalhes {
+      display: none;
+      background-color: #1e1e1e;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+    }
+
+    .panel-detalhes input {
+      margin-right: 10px;
+      padding: 5px;
+      border-radius: 4px;
+      border: none;
     }
 
     #novoUsuarioForm {
@@ -82,29 +110,53 @@
     #novoUsuarioForm button:hover {
       background-color: #00a361;
     }
+
+    #refreshBtn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #00d084;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    #urlScript {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: none;
+      color: #121212;
+    }
   </style>
 </head>
 <body>
 
   <div class="sidebar">
     <button onclick="mostrarFormulario()">Adicionar Novo Usuário</button>
-    <button onclick="gerarLink()">Gerar Link</button>
-    <button onclick="carregarUsuarios()">Atualizar Lista</button>
   </div>
 
   <div class="content">
+    <h3>URL do Apps Script:</h3>
+    <input type="text" id="urlScript" placeholder="https://script.google.com/macros/s/AKfycbyiV0c9Q44f4e_ucOQ69uB6sxKhYadhFuCdxOEnLrHZJ1dRfotf2WnS41jDwIiPmj422g/exec">
+
     <div id="novoUsuarioForm">
+      <input type="text" id="nomeUsuario" placeholder="Nome">
       <input type="email" id="emailUsuario" placeholder="Email">
       <input type="password" id="senhaUsuario" placeholder="Senha">
       <button onclick="adicionarUsuario()">Adicionar</button>
     </div>
 
     <h2>Lista de Usuários</h2>
+    <button id="refreshBtn" onclick="carregarUsuarios()" title="Atualizar">&#10227;</button>
     <table>
       <thead>
         <tr>
-          <th>Email</th>
+          <th>Nome</th>
+          <th>E-mail</th>
           <th>Senha</th>
+          <th>Status</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody id="usuariosTabela"></tbody>
@@ -112,7 +164,13 @@
   </div>
 
   <script>
-    const URL = "http://localhost:3000/usuarios";
+    function getURL() {
+      const url = document.getElementById("urlScript").value.trim();
+      if (!url) {
+        alert("Coloque o URL do Apps Script primeiro!");
+      }
+      return url;
+    }
 
     function mostrarFormulario() {
       const form = document.getElementById("novoUsuarioForm");
@@ -120,77 +178,121 @@
     }
 
     function adicionarUsuario() {
-      const email = document.getElementById("emailUsuario").value;
-      const senha = document.getElementById("senhaUsuario").value;
+      const url = getURL();
+      if (!url) return;
 
-      if (!email || !senha) {
+      const nome = document.getElementById("nomeUsuario").value.trim();
+      const email = document.getElementById("emailUsuario").value.trim();
+      const senha = document.getElementById("senhaUsuario").value.trim();
+
+      if (!nome || !email || !senha) {
         alert("Preencha todos os campos!");
         return;
       }
 
-      fetch(URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha })
+      const payload = new URLSearchParams({ nome, email, senha });
+
+      fetch(url + "?nome=" + encodeURIComponent(nome) + "&email=" + encodeURIComponent(email) + "&senha=" + encodeURIComponent(senha), {
+        method: "POST"
       })
       .then(res => res.json())
       .then(data => {
-        if (data.sucesso) {
+        if (data.success) {
           alert("Usuário adicionado!");
+          document.getElementById("nomeUsuario").value = "";
           document.getElementById("emailUsuario").value = "";
           document.getElementById("senhaUsuario").value = "";
           carregarUsuarios();
+        } else {
+          alert(data.message);
         }
       })
       .catch(err => console.error(err));
     }
 
     function carregarUsuarios() {
-      fetch(URL)
+      const url = getURL();
+      if (!url) return;
+
+      // Para listar todos os usuários, assumimos que chamamos doGet sem email/senha
+      fetch(url)
         .then(res => res.json())
         .then(data => {
           const tbody = document.getElementById("usuariosTabela");
           tbody.innerHTML = "";
-          data.usuarios.forEach(usuario => {
+          if (!data.usuarios) return;
+
+          data.usuarios.forEach((usuario, index) => {
             const tr = document.createElement("tr");
-            tr.innerHTML = `<td>${usuario.email}</td><td>${usuario.senha}</td>`;
+            tr.innerHTML = `
+              <td>${usuario.nome}</td>
+              <td>${usuario.email}</td>
+              <td>
+                <span class="senha-mascarada">&#8226;&#8226;&#8226;&#8226;&#8226;</span>
+                <button class="btn-icon" onclick="revelarSenha(event, '${usuario.email}')">&#128065;</button>
+              </td>
+              <td>
+                <select onchange="atualizarStatus('${usuario.email}', this.value)">
+                  <option value="Ativo" ${usuario.status === 'Ativo' ? 'selected' : ''}>Ativo</option>
+                  <option value="Desativado" ${usuario.status === 'Desativado' ? 'selected' : ''}>Desativado</option>
+                </select>
+              </td>
+              <td>
+                <button class="btn-icon" onclick="toggleDetalhes(${index})">&#9998;</button>
+              </td>
+            `;
             tbody.appendChild(tr);
+
+            const detalhesTr = document.createElement("tr");
+            const detalhesTd = document.createElement("td");
+            detalhesTd.colSpan = 5;
+            detalhesTd.innerHTML = `
+              <div class="panel-detalhes" id="detalhes-${index}">
+                <label>Vencimento: <input type="date" value="${usuario.vencimento || ''}"></label>
+                <label>Data Cadastro: <input type="date" value="${usuario.dataCadastro || ''}" disabled></label>
+                <label>Observações: <input type="text" value="${usuario.observacoes || ''}"></label>
+                <button onclick="salvarDetalhes('${usuario.email}', ${index})">Salvar</button>
+              </div>
+            `;
+            detalhesTr.appendChild(detalhesTd);
+            tbody.appendChild(detalhesTr);
           });
         })
         .catch(err => console.error(err));
     }
 
-    function gerarLink() {
-  fetch("/gerar-link")
-    .then(res => res.json())
-    .then(data => {
-      const linkArea = document.getElementById("linkGerado");
-      linkArea.textContent = data.link;
-
-      // Seleciona automaticamente o link para copiar
-      const range = document.createRange();
-      range.selectNode(linkArea);
-      window.getSelection().removeAllRanges();
-      window.getSelection().addRange(range);
-
-      try {
-        document.execCommand('copy');
-        alert("Link gerado e copiado para a área de transferência!");
-      } catch (err) {
-        alert("Link gerado! Copie manualmente: " + data.link);
+    function revelarSenha(event, email) {
+      const span = event.target.previousElementSibling;
+      const nova = prompt("Digite a senha para revelar:");
+      if (nova === "7904") { // Exemplo, substituir por validação real
+        span.textContent = "senhaReal"; // Ajuste para puxar do Apps Script se quiser
+      } else {
+        alert("Senha incorreta!");
       }
+    }
 
-      window.getSelection().removeAllRanges();
-    })
-    .catch(err => {
-      console.error(err);
-      alert("Erro ao gerar link.");
-    });
-}
+    function toggleDetalhes(index) {
+      const panel = document.getElementById(`detalhes-${index}`);
+      panel.style.display = panel.style.display === "none" ? "block" : "none";
+    }
 
+    function salvarDetalhes(email, index) {
+      const panel = document.getElementById(`detalhes-${index}`);
+      const inputs = panel.querySelectorAll("input");
+      const data = {
+        vencimento: inputs[0].value,
+        observacoes: inputs[2].value
+      };
+      console.log("Salvar dados para", email, data);
+      alert("Detalhes salvos (teste)!");
+      // Aqui você faria o fetch POST/PUT para atualizar no Apps Script
+    }
 
-    // Carrega a lista quando a página abre
-    carregarUsuarios();
+    function atualizarStatus(email, status) {
+      console.log("Atualizar status de", email, "para", status);
+      // Aqui você faria fetch POST/PUT para atualizar no Apps Script
+    }
+
   </script>
 
 </body>
