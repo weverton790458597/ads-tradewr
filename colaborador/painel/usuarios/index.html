@@ -42,66 +42,78 @@
 
     // Carrega todos os usuários do painel
     async function carregarUsuarios() {
-      const res = await fetch(`${SCRIPT_URL}?action=listarPainel`);
-      const data = await res.json();
-      const tbody = document.querySelector("#usuariosTable tbody");
-      tbody.innerHTML = "";
+      try {
+        const res = await fetch(`${SCRIPT_URL}?action=listarPainel`);
+        const data = await res.json();
+        const tbody = document.querySelector("#usuariosTable tbody");
+        tbody.innerHTML = "";
 
-      data.usuarios.forEach(u => {
-        const tr = document.createElement("tr");
-        tr.className = u["Situação financeira"] === "Atrasado" ? "atrasado" : "pago";
-        tr.innerHTML = `
-          <td>${u.Nome}</td>
-          <td>${u.Email}</td>
-          <td><input type="text" value="${u.Status || ""}" id="status-${u.Email}"></td>
-          <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${u.Email}"></td>
-          <td>${u.Ativo || "Não"}</td>
-          <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${u.Email}"></td>
-          <td>${u["Próximo vencimento"] || ""}</td>
-          <td>${u["Situação financeira"] || ""}</td>
-          <td>${u["Receita acumulada"] || 0}</td>
-          <td>
-            <button onclick="toggleAtivo('${u.Email}')">Ativar/Desativar</button>
-            <button onclick="atualizarUsuario('${u.Email}')">Salvar</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
+        data.usuarios.forEach(u => {
+          const tr = document.createElement("tr");
+          tr.className = u["Situação financeira"] === "Atrasado" ? "atrasado" : "pago";
+          tr.innerHTML = `
+            <td>${u.Nome}</td>
+            <td>${u.Email}</td>
+            <td><input type="text" value="${u.Status || ""}" id="status-${u.Email}"></td>
+            <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${u.Email}"></td>
+            <td>${u.Ativo || "Não"}</td>
+            <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${u.Email}"></td>
+            <td>${u["Próximo vencimento"] || ""}</td>
+            <td>${u["Situação financeira"] || ""}</td>
+            <td>${u["Receita acumulada"] || 0}</td>
+            <td>
+              <button onclick="toggleAtivo('${u.Email}')">Ativar/Desativar</button>
+              <button onclick="atualizarUsuario('${u.Email}')">Salvar</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        alert("Erro ao carregar usuários: " + err);
+      }
     }
 
     // Alterna o status Ativo do usuário
     async function toggleAtivo(email) {
-      const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ action: "toggleAtivo", email }),
-        headers: { "Content-Type": "application/json" }
-      });
-      const data = await res.json();
-      alert(data.success ? `Novo status: ${data.novoValor}` : data.message);
-      carregarUsuarios();
+      try {
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({ action: "toggleAtivo", email }),
+          headers: { "Content-Type": "application/json" }
+        });
+        const data = await res.json();
+        alert(data.success ? `Novo status: ${data.novoValor}` : data.message);
+        carregarUsuarios();
+      } catch (err) {
+        alert("Erro ao atualizar status: " + err);
+      }
     }
 
     // Atualiza dados do usuário no painel
     async function atualizarUsuario(email) {
-      const status = document.getElementById(`status-${email}`).value;
-      const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
-      const ultimo = document.getElementById(`ultimo-${email}`).value;
+      try {
+        const status = document.getElementById(`status-${email}`).value;
+        const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
+        const ultimo = document.getElementById(`ultimo-${email}`).value;
 
-      const res = await fetch(SCRIPT_URL, {
-        method: "POST",
-        body: JSON.stringify({ 
-          action: "updatePainel", 
-          email, 
-          Status: status, 
-          Mensalidade: mensalidade,
-          "Data do último pagamento": ultimo 
-        }),
-        headers: { "Content-Type": "application/json" }
-      });
+        const res = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify({ 
+            action: "updatePainel", 
+            email, 
+            Status: status, 
+            Mensalidade: mensalidade,
+            "Data do último pagamento": ultimo 
+          }),
+          headers: { "Content-Type": "application/json" }
+        });
 
-      const data = await res.json();
-      alert(data.success ? data.message : data.message);
-      carregarUsuarios();
+        const data = await res.json();
+        alert(data.success ? data.message : data.message);
+        carregarUsuarios();
+      } catch (err) {
+        alert("Erro ao salvar usuário: " + err);
+      }
     }
 
     // Inicializa a tabela automaticamente
