@@ -1,180 +1,216 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel de Usuários - TradeWR</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1e1e1e;
-      color: #fff;
-      padding: 20px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Usuários - TradeWR</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 20px;
+  }
+
+  .painel-container {
+    width: 100%;
+    max-width: 800px;
+    background-color: #2c2c2c;
+    border-radius: 10px;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  h2 {
+    color: #81c784;
+    text-align: center;
+  }
+
+  input, button {
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    border: none;
+    font-size: 14px;
+  }
+
+  input {
+    width: calc(100% - 22px);
+    box-sizing: border-box;
+  }
+
+  button {
+    cursor: pointer;
+    background-color: #4caf50;
+    color: #000;
+    font-weight: bold;
+  }
+
+  button:hover {
+    background-color: #81c784;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: #fff;
+  }
+
+  table th, table td {
+    border: 1px solid #444;
+    padding: 8px;
+    text-align: left;
+  }
+
+  table th {
+    background-color: #3a3a3a;
+  }
+
+  .mensagem {
+    margin-top: 10px;
+    font-size: 14px;
+    min-height: 18px;
+  }
+
+  @media (max-width: 600px) {
+    table, input, button {
+      font-size: 12px;
     }
-    h2 {
-      margin-bottom: 20px;
-      color: #81c784;
-      text-align: center;
-    }
-    table {
+    input, button {
       width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
     }
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid #444;
-    }
-    th {
-      background-color: #2c2c2c;
-    }
-    td input {
-      width: 100%;
-      padding: 5px;
-      border: none;
-      border-radius: 4px;
-      background-color: #3a3a3a;
-      color: #fff;
-    }
-    td input:focus {
-      outline: 2px solid #81c784;
-    }
-    button {
-      padding: 10px 20px;
-      background-color: #4caf50;
-      border: none;
-      border-radius: 4px;
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    button:hover { background-color: #81c784; }
-    .mensagem {
-      margin-top: 10px;
-      font-size: 14px;
-      text-align: center;
-      min-height: 18px;
-    }
-    @media (max-width: 600px) {
-      th, td { font-size: 12px; padding: 6px; }
-      button { padding: 8px 12px; font-size: 14px; }
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <h2>Painel de Usuários</h2>
 
-  <table id="usuariosTable">
+<div class="painel-container">
+  <h2>Painel de Usuários - TradeWR</h2>
+
+  <input type="text" id="buscarEmail" placeholder="Pesquisar por e-mail">
+  <button id="btnBuscar">Buscar</button>
+  <div class="mensagem" id="mensagem"></div>
+
+  <table>
     <thead>
       <tr>
         <th>Nome</th>
         <th>E-mail</th>
-        <th>Senha</th>
-        <th>Salvar</th>
+        <th>Ações</th>
       </tr>
     </thead>
-    <tbody>
-      <!-- Usuários serão injetados aqui via JS -->
+    <tbody id="usuariosTabela">
+      <!-- Usuários serão listados aqui -->
     </tbody>
   </table>
 
-  <div class="mensagem" id="mensagem"></div>
+  <h3>Atualizar Usuário</h3>
+  <input type="email" id="emailAtualizar" placeholder="E-mail do usuário">
+  <input type="text" id="novoNome" placeholder="Novo nome (opcional)">
+  <input type="password" id="novaSenha" placeholder="Nova senha (opcional)">
+  <button id="btnAtualizar">Atualizar</button>
+</div>
 
-  <script>
-    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbz2D7tsVCMULhWXBEb4up9vMoZjbuUa_EZCV8WykLifXCdx7I_8z69I1beKKrFECMLQ7w/exec"; // Substitua pelo seu Apps Script
-    const tableBody = document.querySelector('#usuariosTable tbody');
-    const mensagem = document.getElementById('mensagem');
+<script>
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbz2D7tsVCMULhWXBEb4up9vMoZjbuUa_EZCV8WykLifXCdx7I_8z69I1beKKrFECMLQ7w/exec";
 
-    // Função para carregar usuários
-    async function carregarUsuarios() {
-      try {
-        const res = await fetch(SHEET_API_URL + "?acao=listar");
-        const data = await res.json();
+  const usuariosTabela = document.getElementById('usuariosTabela');
+  const mensagem = document.getElementById('mensagem');
+  const buscarEmailInput = document.getElementById('buscarEmail');
+  const btnBuscar = document.getElementById('btnBuscar');
 
-        if (!data.success) {
-          mensagem.style.color = 'red';
-          mensagem.textContent = data.message || "Erro ao carregar usuários";
-          return;
-        }
+  const emailAtualizar = document.getElementById('emailAtualizar');
+  const novoNome = document.getElementById('novoNome');
+  const novaSenha = document.getElementById('novaSenha');
+  const btnAtualizar = document.getElementById('btnAtualizar');
 
-        tableBody.innerHTML = ""; // limpa tabela
-
-        data.usuarios.forEach((user, index) => {
-          const tr = document.createElement('tr');
-
-          // Nome
-          const nomeTd = document.createElement('td');
-          const nomeInput = document.createElement('input');
-          nomeInput.value = user.nome || "";
-          nomeTd.appendChild(nomeInput);
-          tr.appendChild(nomeTd);
-
-          // E-mail
-          const emailTd = document.createElement('td');
-          const emailInput = document.createElement('input');
-          emailInput.value = user.email || "";
-          emailTd.appendChild(emailInput);
-          tr.appendChild(emailTd);
-
-          // Senha
-          const senhaTd = document.createElement('td');
-          const senhaInput = document.createElement('input');
-          senhaInput.value = user.senha || "";
-          senhaTd.appendChild(senhaInput);
-          tr.appendChild(senhaTd);
-
-          // Botão Salvar
-          const salvarTd = document.createElement('td');
-          const salvarBtn = document.createElement('button');
-          salvarBtn.textContent = 'Salvar';
-          salvarBtn.addEventListener('click', () => salvarUsuario(index, nomeInput.value, emailInput.value, senhaInput.value));
-          salvarTd.appendChild(salvarBtn);
-          tr.appendChild(salvarTd);
-
-          tableBody.appendChild(tr);
-        });
-      } catch (err) {
-        console.error(err);
-        mensagem.style.color = 'red';
-        mensagem.textContent = 'Erro ao carregar usuários';
-      }
-    }
-
-    // Função para salvar alterações de um usuário
-    async function salvarUsuario(index, nome, email, senha) {
-      try {
-        const formData = new URLSearchParams();
-        formData.append('acao', 'atualizar');
-        formData.append('index', index); // índice do usuário na planilha
-        formData.append('nome', nome);
-        formData.append('email', email);
-        formData.append('senha', senha);
-
-        const res = await fetch(SHEET_API_URL, {
-          method: 'POST',
-          body: formData
-        });
-        const data = await res.json();
-
+  // Função para listar todos os usuários
+  function listarUsuarios(filtroEmail="") {
+    usuariosTabela.innerHTML = '';
+    fetch(`${SHEET_API_URL}?action=listar`)
+      .then(res => res.json())
+      .then(data => {
         if (data.success) {
-          mensagem.style.color = '#81c784';
-          mensagem.textContent = 'Alterações salvas!';
+          const usuarios = filtroEmail 
+            ? data.usuarios.filter(u => u.email.includes(filtroEmail.toLowerCase()))
+            : data.usuarios;
+          
+          usuarios.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${u.nome}</td>
+              <td>${u.email}</td>
+              <td>-</td>
+            `;
+            usuariosTabela.appendChild(tr);
+          });
+
+          if (usuarios.length === 0) {
+            mensagem.style.color = 'red';
+            mensagem.textContent = 'Nenhum usuário encontrado.';
+          } else {
+            mensagem.textContent = '';
+          }
         } else {
           mensagem.style.color = 'red';
-          mensagem.textContent = data.message || 'Erro ao salvar alterações';
+          mensagem.textContent = 'Erro ao buscar usuários';
         }
-      } catch (err) {
-        console.error(err);
+      })
+      .catch(err => {
+        console.error('Erro:', err);
         mensagem.style.color = 'red';
-        mensagem.textContent = 'Erro ao salvar alterações';
-      }
+        mensagem.textContent = 'Erro ao buscar usuários';
+      });
+  }
+
+  // Inicial: lista todos
+  listarUsuarios();
+
+  btnBuscar.addEventListener('click', () => {
+    const filtro = buscarEmailInput.value.trim();
+    listarUsuarios(filtro);
+  });
+
+  // Atualizar usuário
+  btnAtualizar.addEventListener('click', () => {
+    const email = emailAtualizar.value.trim();
+    const nome = novoNome.value.trim();
+    const senha = novaSenha.value.trim();
+
+    if (!email) {
+      mensagem.style.color = 'red';
+      mensagem.textContent = 'E-mail é obrigatório para atualizar';
+      return;
     }
 
-    // Carrega usuários ao abrir a página
-    carregarUsuarios();
-  </script>
+    const formData = new URLSearchParams();
+    formData.append('action', 'atualizar');
+    formData.append('email', email);
+    if (nome) formData.append('nome', nome);
+    if (senha) formData.append('senha', senha);
+
+    fetch(SHEET_API_URL, {
+      method: 'POST',
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      mensagem.style.color = data.success ? '#81c784' : 'red';
+      mensagem.textContent = data.message;
+      listarUsuarios(); // Atualiza tabela
+    })
+    .catch(err => {
+      console.error('Erro:', err);
+      mensagem.style.color = 'red';
+      mensagem.textContent = 'Erro ao atualizar usuário';
+    });
+  });
+</script>
 </body>
 </html>
