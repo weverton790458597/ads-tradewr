@@ -16,7 +16,7 @@
   </style>
 </head>
 <body>
-  <h1>Painel de Usuários – Teste 2</h1>
+  <h1>Painel de Usuários – Teste 3</h1>
 
   <table id="usuariosTable">
     <thead>
@@ -39,10 +39,7 @@
   <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzYwlENEYm8ZLzeUvPYPqA8_Dt8tFEwpeJzplYXk-jyEKHij-r92unCmgbEeOJSYRODkg/exec";
 
-    function sanitizeEmail(email) {
-      return email.replace(/[@.]/g, "_");
-    }
-
+    // Carrega todos os usuários do painel
     async function carregarUsuarios() {
       try {
         const res = await fetch(`${SCRIPT_URL}?action=listarpainel`);
@@ -51,16 +48,15 @@
         tbody.innerHTML = "";
 
         data.usuarios.forEach(u => {
-          const safeEmail = sanitizeEmail(u.Email);
           const tr = document.createElement("tr");
           tr.className = u["Situação financeira"] === "Atrasado" ? "atrasado" : "pago";
           tr.innerHTML = `
             <td>${u.Nome}</td>
             <td>${u.Email}</td>
-            <td><input type="text" value="${u.Status || ""}" id="status-${safeEmail}"></td>
-            <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${safeEmail}"></td>
+            <td><input type="text" value="${u.Status || ""}" id="status-${u.Email}"></td>
+            <td><input type="number" value="${u.Mensalidade || 0}" id="mensalidade-${u.Email}"></td>
             <td>${u.Ativo || "Não"}</td>
-            <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${safeEmail}"></td>
+            <td><input type="date" value="${u["Data do último pagamento"] || ""}" id="ultimo-${u.Email}"></td>
             <td>${u["Próximo vencimento"] || ""}</td>
             <td>${u["Situação financeira"] || ""}</td>
             <td>${u["Receita acumulada"] || 0}</td>
@@ -76,13 +72,18 @@
       }
     }
 
+    // Alterna o status Ativo do usuário (POST form-urlencoded)
     async function toggleAtivo(email) {
       try {
+        const formData = new URLSearchParams();
+        formData.append('action', 'toggleativo');
+        formData.append('email', email);
+
         const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({ action: "toggleativo", email }),
-          headers: { "Content-Type": "application/json" }
+          method: 'POST',
+          body: formData
         });
+
         const data = await res.json();
         alert(data.success ? `Novo status: ${data.novoValor}` : data.message);
         carregarUsuarios();
@@ -91,23 +92,23 @@
       }
     }
 
+    // Atualiza dados do usuário no painel (POST form-urlencoded)
     async function atualizarUsuario(email) {
       try {
-        const safeEmail = sanitizeEmail(email);
-        const status = document.getElementById(`status-${safeEmail}`).value;
-        const mensalidade = parseFloat(document.getElementById(`mensalidade-${safeEmail}`).value) || 0;
-        const ultimo = document.getElementById(`ultimo-${safeEmail}`).value;
+        const status = document.getElementById(`status-${email}`).value;
+        const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
+        const ultimo = document.getElementById(`ultimo-${email}`).value;
+
+        const formData = new URLSearchParams();
+        formData.append('action', 'updatepainel');
+        formData.append('email', email);
+        formData.append('Status', status);
+        formData.append('Mensalidade', mensalidade);
+        formData.append('Data do último pagamento', ultimo);
 
         const res = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: JSON.stringify({ 
-            action: "updatepainel",
-            email,
-            Status: status,
-            Mensalidade: mensalidade,
-            "Data do último pagamento": ultimo
-          }),
-          headers: { "Content-Type": "application/json" }
+          method: 'POST',
+          body: formData
         });
 
         const data = await res.json();
