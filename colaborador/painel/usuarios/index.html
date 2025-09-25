@@ -76,9 +76,9 @@
     // Alterna o status Ativo do usuário
     async function toggleAtivo(email) {
       try {
-        const res = await fetch(SCRIPT_URL, {
+        const res = await fetch(`${SCRIPT_URL}?action=toggleAtivo`, {
           method: "POST",
-          body: JSON.stringify({ action: "toggleAtivo", email }),
+          body: JSON.stringify({ email }),
           headers: { "Content-Type": "application/json" }
         });
         const data = await res.json();
@@ -96,10 +96,9 @@
         const mensalidade = parseFloat(document.getElementById(`mensalidade-${email}`).value) || 0;
         const ultimo = document.getElementById(`ultimo-${email}`).value;
 
-        const res = await fetch(SCRIPT_URL, {
+        const res = await fetch(`${SCRIPT_URL}?action=updatePainel`, {
           method: "POST",
           body: JSON.stringify({ 
-            action: "updatePainel", 
             email, 
             Status: status, 
             Mensalidade: mensalidade,
