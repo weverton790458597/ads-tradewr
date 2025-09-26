@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TradeWR</title>
-  <!-- Favicon -->
+<!-- Favicon -->
   <link rel="icon" type="image/png" href="logo.png">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
@@ -113,7 +113,9 @@
 
   <!-- Área Colaborador -->
   <div id="colaborador">
-    <button onclick="carregarPagina('https://www.tradewr.shop/colaborador/')">Usuários</button>
+    <h2>Área do Colaborador</h2>
+    <p>Aqui você pode acessar suas ferramentas e relatórios.</p>
+    <button onclick="fecharColaborador()">Abrir</button>
   </div>
 
   <script>
@@ -121,8 +123,9 @@
       document.getElementById('colaborador').style.display = 'flex';
     }
     function fecharColaborador(){
-      document.getElementById('colaborador').style.display = 'none';
+      window.open("https://www.tradewr.shop/colaborador/","_blanck");
     }
   </script>
 </body>
 </html>
+ 
