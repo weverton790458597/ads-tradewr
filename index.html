@@ -3,191 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TradeWR - Plataforma de Sinais de Trade</title>
+  <title>TradeWR</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.png">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-      color: #333;
-      line-height: 1.6;
-    }
-    header {
-      background-color: #0a9f0a;
-      color: white;
-      padding: 25px;
-      text-align: center;
-      font-size: 28px;
-      font-weight: bold;
-      text-shadow: 1px 1px 2px #000;
-    }
-    main {
-      padding: 40px 20px;
-      max-width: 950px;
-      margin: 0 auto;
-      background-color: white;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
-      border-radius: 12px;
-    }
-    h2 {
-      color: #0a9f0a;
-      margin-top: 35px;
-      border-bottom: 2px solid #0a9f0a;
-      padding-bottom: 5px;
-    }
-    .diferencial {
-      display: flex;
-      align-items: flex-start;
-      margin-bottom: 25px;
-      padding: 20px;
-      border-radius: 10px;
-      background-color: #fffbea;
-      border-left: 6px solid gold;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      transition: transform 0.2s;
-    }
-    .diferencial:hover {
-      transform: scale(1.02);
-    }
-    .icon {
-      font-size: 30px;
-      margin-right: 15px;
-      flex-shrink: 0;
-    }
-    .diferencial-content {
-      flex: 1;
-    }
-    .diferencial-content h3 {
-      margin: 0 0 10px 0;
-      color: #b8860b;
-      display: flex;
-      align-items: center;
-    }
-    .premium-label {
-      font-weight: bold;
-      color: #0a9f0a;
-      font-size: 14px;
-      padding: 3px 6px;
-      border-radius: 4px;
-      background-color: gold;
-      margin-left: 10px;
-    }
-    .ad-box {
-      width: 100%;
-      max-width: 500px;
-      height: 500px;
-      margin: 30px auto;
-      border: 2px solid green;
-      background-color: rgba(0,0,0,0.05);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 16px;
-      color: #666;
-      text-align: center;
-    }
-    footer {
-      text-align: center;
-      margin-top: 60px;
-      font-size: 14px;
-      color: #888;
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background: #0d1117; color: #e6edf3; line-height: 1.6; }
+    header { background: linear-gradient(90deg, #0d1117, #161b22); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    header h1 { font-size: 1.5rem; color: #58a6ff; cursor: pointer; }
+    nav a { margin: 0 1rem; color: #e6edf3; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+    nav a:hover { color: #58a6ff; }
+
+    .hero { text-align: center; padding: 4rem 2rem; background: url('https://images.unsplash.com/photo-1569025690938-a00729c9e1a9') no-repeat center/cover; color: white; }
+    .hero h2 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .hero p { max-width: 700px; margin: auto; font-size: 1.1rem; }
+    .hero button { margin-top: 2rem; padding: 0.8rem 2rem; border: none; border-radius: 50px; background: #58a6ff; color: white; font-size: 1rem; cursor: pointer; transition: 0.3s; }
+    .hero button:hover { background: #1f6feb; }
+
+    section { padding: 4rem 2rem; max-width: 1100px; margin: auto; }
+    section h3 { text-align: center; font-size: 2rem; margin-bottom: 2rem; color: #58a6ff; }
+
+    .grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .card { background: #161b22; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.3s; }
+    .card:hover { transform: translateY(-5px); }
+
+    .video-container { text-align: center; margin-top: 2rem; }
+    .video-container iframe { width: 100%; max-width: 700px; border-radius: 12px; }
+
+    footer { background: #161b22; padding: 2rem; text-align: center; font-size: 0.9rem; margin-top: 3rem; color: #8b949e; }
+    footer a { color: #58a6ff; text-decoration: none; }
+
+    /* Colaborador overlay */
+    #colaborador { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13,17,23,0.98); display: none; justify-content: center; align-items: center; flex-direction: column; color: white; }
+    #colaborador h2 { margin-bottom: 1rem; }
+    #colaborador button { margin-top: 1rem; padding: 0.6rem 1.5rem; border: none; border-radius: 8px; background: #58a6ff; color: white; cursor: pointer; }
+    #colaborador button:hover { background: #1f6feb; }
+
+    @media (max-width: 768px) {
+      .hero h2 { font-size: 1.8rem; }
+      .hero p { font-size: 1rem; }
     }
   </style>
 </head>
 <body>
+  <header>
+    <h1 onclick="location.reload()">TradeWR Extensão for Chrome</h1>
+    <nav>
+      <a href="#sobre">Sobre</a>
+      <a href="#planos">Planos</a>
+      <a href="#diferenciais">Diferenciais</a>
+      <a href="#contato">Contato</a>
+      <a href="#" onclick="abrirColaborador()">Colaborador</a>
+    </nav>
+  </header>
 
-<header>TradeWR - Plataforma de Sinais de Trade</header>
+  <section class="hero">
+    <h2>Ganhe vantagem no mercado com nossa extensão de sinais</h2>
+    <p>Extensão inteligente para traders que buscam precisão, velocidade e praticidade na hora de operar. Tudo em tempo real, com suporte dedicado e ferramentas exclusivas.</p>
+    <button onclick="document.querySelector('#planos').scrollIntoView({behavior:'smooth'})">Conhecer Planos</button>
+  </section>
 
-<main>
-
-  <h2>Liberdade e praticidade para todos os traders</h2>
-  <p>
-    O TradeWR oferece ferramentas pensadas para melhorar sua experiência de operação, seja você iniciante ou experiente. Nossa plataforma garante acesso rápido aos sinais, organização eficiente e mais controle sobre suas operações.
-  </p>
-  <p>
-    Mesmo no plano normal, você já terá vantagens importantes, como sinais confiáveis e uma interface intuitiva que facilita acompanhar o mercado sem esforço.
-  </p>
-
-  <h2>Diferenciais do Plano Premium</h2>
-
-  <div class="diferencial">
-    <div class="icon">⚡</div>
-    <div class="diferencial-content">
-      <h3>Carregamento Instantâneo das 120 Velas <span class="premium-label">Premium</span></h3>
-      <p>
-        Enquanto o plano normal exige esperar até 2 horas pelo carregamento das 120 velas de 1 minuto, o plano Premium permite acesso imediato, economizando tempo e permitindo decisões rápidas.
-      </p>
+  <section id="sobre">
+    <h3>Sobre a Extensão</h3>
+    <p style="text-align:center; max-width:800px; margin:auto;">Nossa extensão foi desenvolvida para simplificar o processo de análise e execução de sinais de day trade. Com design intuitivo e tecnologia robusta, oferecemos a melhor experiência para iniciantes e profissionais.</p>
+    <div class="video-container">
+      <iframe height="400" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
     </div>
-  </div>
+  </section>
 
-  <div class="diferencial">
-    <div class="icon">🪟</div>
-    <div class="diferencial-content">
-      <h3>Popup Flutuante Personalizável <span class="premium-label">Premium</span></h3>
-      <p>
-        Visualize os sinais em um popup flutuante que pode ser movido livremente na tela, até mesmo sobre a aba da corretora que você usa. Mais praticidade para operar sem perder o foco.
-      </p>
+  <section id="planos">
+    <h3>Planos</h3>
+    <div class="grid">
+      <div class="card">
+        <h4>Plano Starter</h4>
+        <p>Ideal para iniciantes que querem começar no mercado com segurança.</p>
+        <p><strong>R$ 49/mês</strong></p>
+      </div>
+      <div class="card">
+        <h4>Plano Pro</h4>
+        <p>Mais recursos, mais sinais e suporte premium para acelerar resultados.</p>
+        <p><strong>R$ 99/mês</strong></p>
+      </div>
+      <div class="card">
+        <h4>Plano Elite</h4>
+        <p>Acesso total a todas as funcionalidades, relatórios exclusivos e mentoria.</p>
+        <p><strong>R$ 199/mês</strong></p>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="diferencial">
-    <div class="icon">🔔</div>
-    <div class="diferencial-content">
-      <h3>Alertas Visuais e Sonoros em Tempo Real <span class="premium-label">Premium</span></h3>
-      <p>
-        Receba notificações de cada sinal sem precisar ficar grudado no gráfico. O Premium oferece alertas sonoros e visuais que garantem mais conforto e segurança nas operações.
-      </p>
+  <section id="diferenciais">
+    <h3>Diferenciais</h3>
+    <div class="grid">
+      <div class="card">⚡ Sinais em tempo real, direto na tela.</div>
+      <div class="card">📊 Gráficos e relatórios automáticos.</div>
+      <div class="card">🔒 Segurança e estabilidade garantidas.</div>
+      <div class="card">💬 Suporte humano 24/7.</div>
     </div>
+  </section>
+
+  <section id="contato">
+    <h3>Contato</h3>
+    <p style="text-align:center;">Quer saber mais? Entre em contato pelo nosso <a href="tradewr.adm@gmail.com">email</a> ou <a href="https://t.me/+KszAlatLNHY5ODYx">Grupo no Telegram</a> .</p>
+  </section>
+
+  <footer>
+    <p>© 2025 TradeWR. Todos os direitos reservados. | Desenvolvido por TradeWR </p>
+  </footer>
+
+  <!-- Área Colaborador -->
+  <div id="colaborador">
+    <button onclick="carregarPagina('https://www.tradewr.shop/colaborador/')">Usuários</button>
   </div>
 
-  <div class="diferencial">
-    <div class="icon">📊</div>
-    <div class="diferencial-content">
-      <h3>Tabela de Resultados de Sinais <span class="premium-label">Premium</span></h3>
-      <p>
-        Analise o histórico dos sinais e identifique os melhores horários para operar. Tome decisões informadas com base nos resultados reais.
-      </p>
-    </div>
-  </div>
-
-  <div class="diferencial">
-    <div class="icon">❌</div>
-    <div class="diferencial-content">
-      <h3>Experiência sem anúncios <span class="premium-label">Premium</span></h3>
-      <p>
-        Diferente do plano normal, no Premium não há exibição de anúncios, oferecendo uma navegação limpa e totalmente focada na operação.
-      </p>
-    </div>
-  </div>
-
-  <div class="diferencial">
-    <div class="icon">📋</div>
-    <div class="diferencial-content">
-      <h3>Tabela de Gerenciamento <span class="premium-label">Premium</span></h3>
-      <p>
-        Organize suas operações, registre entradas, saídas e resultados com facilidade. Controle total sobre sua performance em um único lugar.
-      </p>
-    </div>
-  </div>
-
-  <h2>Benefícios para todos os usuários</h2>
-  <p>
-    Independentemente do plano, TradeWR oferece uma experiência de operação mais organizada e eficiente. Com interface amigável, sinais confiáveis e fácil acompanhamento, mesmo iniciantes podem operar com mais confiança.
-  </p>
-  <p>
-    A plataforma foi pensada para dar liberdade de operar sem pressão, mantendo controle e organização. Nosso foco é tornar seu dia a dia de trader mais prático, sem prometer lucros, mas com funcionalidades que realmente ajudam a estruturar suas operações.
-  </p>
-
-  <div class="ad-box">
-    Espaço reservado para anúncios do Google AdSense
-  </div>
-
-</main>
-
-<footer>
-  &copy; 2025 TradeWR. Todos os direitos reservados.
-</footer>
-
+  <script>
+    function abrirColaborador(){
+      document.getElementById('colaborador').style.display = 'flex';
+    }
+    function fecharColaborador(){
+      document.getElementById('colaborador').style.display = 'none';
+    }
+  </script>
 </body>
 </html>
