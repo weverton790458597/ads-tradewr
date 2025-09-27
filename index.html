@@ -1,131 +1,274 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TradeWR</title>
-<!-- Favicon -->
-  <link rel="icon" type="image/png" href="logo.png">
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-    body { background: #0d1117; color: #e6edf3; line-height: 1.6; }
-    header { background: linear-gradient(90deg, #0d1117, #161b22); padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
-    header h1 { font-size: 1.5rem; color: #58a6ff; cursor: pointer; }
-    nav a { margin: 0 1rem; color: #e6edf3; text-decoration: none; font-weight: 500; transition: color 0.3s; }
-    nav a:hover { color: #58a6ff; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradeWR</title>
+<link rel="icon" type="image/png" href="logo.png">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+body { background: #0d1117; color: #e6edf3; line-height: 1.6; }
 
-    .hero { text-align: center; padding: 4rem 2rem; background: url('https://images.unsplash.com/photo-1569025690938-a00729c9e1a9') no-repeat center/cover; color: white; }
-    .hero h2 { font-size: 2.5rem; margin-bottom: 1rem; }
-    .hero p { max-width: 700px; margin: auto; font-size: 1.1rem; }
-    .hero button { margin-top: 2rem; padding: 0.8rem 2rem; border: none; border-radius: 50px; background: #58a6ff; color: white; font-size: 1rem; cursor: pointer; transition: 0.3s; }
-    .hero button:hover { background: #1f6feb; }
+/* Cabeçalho */
+header { 
+  background: linear-gradient(90deg, #0d1117, #161b22); 
+  padding: 1rem 2rem; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  position: sticky; 
+  top: 0; 
+  z-index: 100; 
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
 
-    section { padding: 4rem 2rem; max-width: 1100px; margin: auto; }
-    section h3 { text-align: center; font-size: 2rem; margin-bottom: 2rem; color: #58a6ff; }
+.header-logo-title {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
-    .grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-    .card { background: #161b22; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.3s; }
-    .card:hover { transform: translateY(-5px); }
+.header-logo-title img {
+  height: 40px;
+  width: 40px;
+  margin-right: 12px;
+}
 
-    .video-container { text-align: center; margin-top: 2rem; }
-    .video-container iframe { width: 100%; max-width: 700px; border-radius: 12px; }
+.header-logo-title h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #58a6ff;
+  transition: color 0.3s, text-shadow 0.3s;
+}
 
-    footer { background: #161b22; padding: 2rem; text-align: center; font-size: 0.9rem; margin-top: 3rem; color: #8b949e; }
-    footer a { color: #58a6ff; text-decoration: none; }
+.header-logo-title h1 span {
+  font-weight: 400;
+  color: #c9d1d9;
+  font-size: 1rem;
+  margin-left: 6px;
+}
 
-    /* Colaborador overlay */
-    #colaborador { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13,17,23,0.98); display: none; justify-content: center; align-items: center; flex-direction: column; color: white; }
-    #colaborador h2 { margin-bottom: 1rem; }
-    #colaborador button { margin-top: 1rem; padding: 0.6rem 1.5rem; border: none; border-radius: 8px; background: #58a6ff; color: white; cursor: pointer; }
-    #colaborador button:hover { background: #1f6feb; }
+.header-logo-title h1:hover {
+  color: #1f6feb;
+  text-shadow: 0 0 8px rgba(88,166,255,0.7);
+}
 
-    @media (max-width: 768px) {
-      .hero h2 { font-size: 1.8rem; }
-      .hero p { font-size: 1rem; }
-    }
-  </style>
+nav a { 
+  margin: 0 1rem; 
+  color: #e6edf3; 
+  text-decoration: none; 
+  font-weight: 500; 
+  transition: color 0.3s; 
+}
+
+nav a:hover, nav a:focus { color: #58a6ff; outline: none; }
+
+/* Hero */
+.hero { text-align: center; padding: 4rem 2rem; background: url('https://images.unsplash.com/photo-1569025690938-a00729c9e1a9') no-repeat center/cover; color: white; }
+.hero h2 { font-size: 2.5rem; margin-bottom: 1rem; animation: fadeIn 1s ease-in; }
+.hero p { max-width: 700px; margin: auto; font-size: 1.1rem; animation: fadeIn 1.2s ease-in; }
+.hero button { margin-top: 2rem; padding: 0.8rem 2rem; border: none; border-radius: 50px; background: #58a6ff; color: white; font-size: 1rem; cursor: pointer; transition: all 0.3s; }
+.hero button:hover { background: #1f6feb; transform: scale(1.05); box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+
+section { padding: 4rem 2rem; max-width: 1100px; margin: auto; }
+section h3 { text-align: center; font-size: 2rem; margin-bottom: 2rem; color: #58a6ff; }
+
+.grid { display: grid; gap: 2rem; grid-template-columns: repeat(3, 1fr); }
+
+/* Cards de planos */
+.card {
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+  cursor: pointer;
+  background: #161b22;
+}
+
+/* Escada de valor */
+.card.dayone { border-top: 4px solid #58a6ff; }
+.card.starter { border-top: 4px solid #1f6feb; }
+.card.accelerator { border-top: 4px solid #8b5cf6; }
+.card.alpha { border-top: 4px solid gold; grid-column: 1 / -1; justify-self: center; max-width: 60%; }
+
+/* Hover efeito */
+.card:hover {
+  transform: translateY(-15px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.6);
+}
+.card.dayone:hover { background: rgba(88,166,255,0.1); }
+.card.starter:hover { background: rgba(31,111,235,0.1); }
+.card.accelerator:hover { background: rgba(139,92,246,0.1); }
+.card.alpha:hover { background: rgba(255,215,0,0.1); }
+
+/* Botões dos cards */
+.card button { 
+  margin-top: 1rem; 
+  padding: 0.6rem 1.5rem; 
+  border: none; 
+  border-radius: 8px; 
+  background: #58a6ff; 
+  color: white; 
+  cursor: pointer; 
+  transition: all 0.3s; 
+}
+.card button:hover { 
+  background: #1f6feb; 
+  transform: scale(1.05); 
+}
+
+.video-container { text-align: center; margin-top: 2rem; }
+.video-container iframe { width: 100%; max-width: 700px; border-radius: 12px; }
+
+footer { background: #161b22; padding: 2rem; text-align: center; font-size: 0.9rem; margin-top: 3rem; color: #8b949e; }
+footer a { color: #58a6ff; text-decoration: none; }
+
+#colaborador { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(13,17,23,0.98); display: none; justify-content: center; align-items: center; flex-direction: column; color: white; z-index: 200; }
+#colaborador h2 { margin-bottom: 1rem; }
+#colaborador button { margin-top: 1rem; padding: 0.6rem 1.5rem; border: none; border-radius: 8px; background: #58a6ff; color: white; cursor: pointer; }
+#colaborador button:hover { background: #1f6feb; }
+
+@keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+
+/* Diferenciais */
+.diferenciais-grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); margin-top: 2rem; }
+.diferencial-card { background: #161b22; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.3s, box-shadow 0.3s, background 0.3s; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.diferencial-card:hover { transform: translateY(-10px); box-shadow: 0 8px 20px rgba(0,0,0,0.5); background: rgba(88,166,255,0.1); }
+.diferencial-card i { font-size: 2rem; margin-bottom: 1rem; color: #58a6ff; }
+
+@media (max-width: 1024px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .card.alpha { max-width: 80%; }
+}
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .card.alpha { max-width: 100%; }
+  .hero h2 { font-size: 1.8rem; }
+  .hero p { font-size: 1rem; }
+}
+</style>
 </head>
 <body>
-  <header>
-    <h1 onclick="location.reload()">TradeWR Extensão for Chrome</h1>
-    <nav>
-      <a href="#sobre">Sobre</a>
-      <a href="#planos">Planos</a>
-      <a href="#diferenciais">Diferenciais</a>
-      <a href="#contato">Contato</a>
-      <a href="#" onclick="abrirColaborador()">Colaborador</a>
-    </nav>
-  </header>
-
-  <section class="hero">
-    <h2>Ganhe vantagem no mercado com nossa extensão de sinais</h2>
-    <p>Extensão inteligente para traders que buscam precisão, velocidade e praticidade na hora de operar. Tudo em tempo real, com suporte dedicado e ferramentas exclusivas.</p>
-    <button onclick="document.querySelector('#planos').scrollIntoView({behavior:'smooth'})">Conhecer Planos</button>
-  </section>
-
-  <section id="sobre">
-    <h3>Sobre a Extensão</h3>
-    <p style="text-align:center; max-width:800px; margin:auto;">Nossa extensão foi desenvolvida para simplificar o processo de análise e execução de sinais de day trade. Com design intuitivo e tecnologia robusta, oferecemos a melhor experiência para iniciantes e profissionais.</p>
-    <div class="video-container">
-      <iframe height="400" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen></iframe>
-    </div>
-  </section>
-
-  <section id="planos">
-    <h3>Planos</h3>
-    <div class="grid">
-      <div class="card">
-        <h4>Plano Starter</h4>
-        <p>Ideal para iniciantes que querem começar no mercado com segurança.</p>
-        <p><strong>R$ 49/mês</strong></p>
-      </div>
-      <div class="card">
-        <h4>Plano Pro</h4>
-        <p>Mais recursos, mais sinais e suporte premium para acelerar resultados.</p>
-        <p><strong>R$ 99/mês</strong></p>
-      </div>
-      <div class="card">
-        <h4>Plano Elite</h4>
-        <p>Acesso total a todas as funcionalidades, relatórios exclusivos e mentoria.</p>
-        <p><strong>R$ 199/mês</strong></p>
-      </div>
-    </div>
-  </section>
-
-  <section id="diferenciais">
-    <h3>Diferenciais</h3>
-    <div class="grid">
-      <div class="card">⚡ Sinais em tempo real, direto na tela.</div>
-      <div class="card">📊 Gráficos e relatórios automáticos.</div>
-      <div class="card">🔒 Segurança e estabilidade garantidas.</div>
-      <div class="card">💬 Suporte humano 24/7.</div>
-    </div>
-  </section>
-
-  <section id="contato">
-    <h3>Contato</h3>
-    <p style="text-align:center;">Quer saber mais? Entre em contato pelo nosso <a href="tradewr.adm@gmail.com">email</a> ou <a href="https://t.me/+KszAlatLNHY5ODYx">Grupo no Telegram</a> .</p>
-  </section>
-
-  <footer>
-    <p>© 2025 TradeWR. Todos os direitos reservados. | Desenvolvido por TradeWR </p>
-  </footer>
-
-  <!-- Área Colaborador -->
-  <div id="colaborador">
-    <h2>Área do Colaborador</h2>
-    <p>Aqui você pode acessar suas ferramentas e relatórios.</p>
-    <button onclick="fecharColaborador()">Abrir</button>
+<header>
+  <div class="header-logo-title" onclick="location.reload()">
+    <img src="logo.png" alt="TradeWR Logo">
+    <h1>TradeWR <span>Extension for Chrome</span></h1>
   </div>
+  <nav>
+    <a href="#sobre">Sobre</a>
+    <a href="#planos">Planos</a>
+    <a href="#diferenciais">Diferenciais</a>
+    <a href="#contato">Contato</a>
+    <a href="#" onclick="abrirColaborador()">Colaborador</a>
+  </nav>
+</header>
 
-  <script>
-    function abrirColaborador(){
-      document.getElementById('colaborador').style.display = 'flex';
-    }
-    function fecharColaborador(){
-      window.open("https://www.tradewr.shop/colaborador/","_blanck");
-    }
-  </script>
+<section class="hero">
+  <h2>Ganhe vantagem no mercado com nossa extensão de sinais</h2>
+  <p>Extensão inteligente para traders que buscam precisão, velocidade e praticidade na hora de operar. Tudo em tempo real, com suporte dedicado e ferramentas exclusivas.</p>
+  <button onclick="document.querySelector('#planos').scrollIntoView({behavior:'smooth'})">Conhecer Planos</button>
+</section>
+
+<section id="sobre">
+  <h3>Sobre a Extensão</h3>
+  <p style="text-align:center; max-width:800px; margin:auto;">Nossa extensão foi desenvolvida para simplificar o processo de análise e execução de sinais de day trade. Com design intuitivo e tecnologia robusta, oferecemos a melhor experiência para iniciantes e profissionais.</p>
+  <div class="video-container">
+    <iframe height="400" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen loading="lazy" title="Vídeo explicativo"></iframe>
+  </div>
+</section>
+
+<section id="planos">
+  <h3>Planos</h3>
+  <div class="grid">
+    <div class="card dayone">
+      <h4>Day One 🌱</h4>
+      <p>Experimente o poder dos sinais desde o primeiro dia. Sem compromisso, teste e veja se você consegue operar com mais confiança.</p>
+      <p><strong>R$ 20/7 dias</strong></p>
+      <button onclick="window.location.href='URL_DO_PLANODAYONE'">Assine agora</button>
+    </div>
+    <div class="card starter">
+      <h4>Trader Starter 🚀</h4>
+      <p>Comece sua jornada no mercado com sinais confiáveis e suporte que guia cada operação. Ideal para quem quer resultados consistentes sem complicação.</p>
+      <p><strong>R$ 97/mês</strong></p>
+      <button onclick="window.location.href='URL_DO_PLANOSTARTER'">Assine agora</button>
+    </div>
+    <div class="card accelerator">
+      <h4>Trader Accelerator ⚡</h4>
+      <p>Eleve seu trading com sinais avançados, insights estratégicos e acesso a ferramentas que aceleram seus lucros. O plano para quem quer realmente crescer rápido.</p>
+      <p><strong>R$ 497/mês</strong></p>
+      <button onclick="window.location.href='URL_DO_PLANOACCELERATOR'">Assine agora</button>
+    </div>
+    <div class="card alpha">
+      <h4>Alpha Signals 👑</h4>
+      <p>O nível máximo do seu trading. Sinais de elite, ferramentas completas e tudo que você precisa para operar como um verdadeiro Alpha. Para quem não quer apenas seguir o mercado, mas dominá-lo.</p>
+      <p><strong>R$ 997/mês</strong></p>
+      <button onclick="window.location.href='URL_DO_PLANOALPHA'">Assine agora</button>
+    </div>
+  </div>
+</section>
+
+<section id="diferenciais">
+  <h3>Diferenciais da Extensão</h3>
+  <div class="diferenciais-grid">
+    <div class="diferencial-card">
+      <i>📊</i>
+      <h4>Confirmação de Entradas Inteligente</h4>
+      <p>Módulos que analisam 500 candles e indicam a porcentagem de acerto para decisões mais seguras.</p>
+    </div>
+    <div class="diferencial-card">
+      <i>🔔</i>
+      <h4>Alarmes Personalizáveis</h4>
+      <p>Sons de alerta quando sinais aparecem, podendo ser ativados ou desativados pelo usuário.</p>
+    </div>
+    <div class="diferencial-card">
+      <i>⚡</i>
+      <h4>Sinais em Tempo Real</h4>
+      <p>Receba sinais instantaneamente, sem atrasos, garantindo rapidez e vantagem no mercado.</p>
+    </div>
+    <div class="diferencial-card">
+      <i>🖥️</i>
+      <h4>Extremamente Leve</h4>
+      <p>Não sobrecarrega o notebook ou a plataforma da corretora, ideal para operações contínuas.</p>
+    </div>
+    <div class="diferencial-card">
+      <i>💬</i>
+      <h4>Suporte 24/7</h4>
+      <p>Atendimento direto com o criador, garantindo ajuda rápida e personalizada sempre que necessário.</p>
+    </div>
+    <div class="diferencial-card">
+      <i>📈</i>
+      <h4>Gerenciamento de Risco Inteligente</h4>
+      <p>Planilha em Excel com VBA avançado para controle detalhado do dia a dia das operações.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contato">
+  <h3>Contato</h3>
+  <p style="text-align:center;">Quer saber mais? Entre em contato pelo nosso <a href="mailto:tradewr.adm@gmail.com">email</a> ou <a href="https://t.me/+KszAlatLNHY5ODYx">Grupo no Telegram</a>.</p>
+</section>
+
+<footer>
+  <p>© 2025 TradeWR. Todos os direitos reservados. | Desenvolvido por TradeWR </p>
+</footer>
+
+<div id="colaborador">
+  <h2>Área do Colaborador</h2>
+  <p>Aqui você pode acessar suas ferramentas e relatórios.</p>
+  <div>
+    <!-- Abrir arquivo local do projeto -->
+    <button onclick="window.location.href='relatorios.html'">Ir para Ferramentas</button>
+    <button onclick="fecharColaborador()">Fechar</button>
+  </div>
+</div>
+
+<script>
+function abrirColaborador() {
+  document.getElementById('colaborador').style.display = 'flex';
+}
+function fecharColaborador() {
+  document.getElementById('colaborador').style.display = 'none';
+}
+</script>
 </body>
 </html>
- 
