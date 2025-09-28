@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - TradeWR</title>
+  <!-- Favicon -->
   <link rel="icon" type="image/png" href="logocadastro.png">
   <style>
     * { box-sizing: border-box; }
@@ -34,31 +35,74 @@
       width: 100px;
       height: 100px;
       margin: 0 auto 20px;
-      background-image: url('logocadastro.png');
+      background-image: url('logocadastro.png'); /* Substitua pela sua logo */
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
     }
 
-    h2 { margin-bottom: 25px; color: #81c784; font-size: 22px; }
+    h2 {
+      margin-bottom: 25px;
+      color: #81c784;
+      font-size: 22px;
+    }
 
-    input { width: 100%; padding: 12px; margin-bottom: 15px; border: none; border-radius: 6px;
-            font-size: 14px; background-color: #3a3a3a; color: #fff; }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      background-color: #3a3a3a;
+      color: #fff;
+    }
 
-    input::placeholder { color: #ccc; }
+    input::placeholder {
+      color: #ccc;
+    }
 
-    button { width: 100%; padding: 14px; font-size: 16px; font-weight: bold; background-color: #4caf50;
-             border: none; border-radius: 6px; cursor: pointer; color: #000; transition: 0.3s; }
+    button {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      background-color: #4caf50;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #000;
+      transition: 0.3s;
+    }
 
-    button:hover { background-color: #81c784; }
+    button:hover {
+      background-color: #81c784;
+    }
 
-    .mensagem { margin-top: 15px; font-size: 14px; min-height: 18px; }
+    .mensagem {
+      margin-top: 15px;
+      font-size: 14px;
+      min-height: 18px;
+    }
 
     @media (max-width: 500px) {
-      .cadastro-container { padding: 20px 15px; }
-      h2 { font-size: 20px; }
-      input { padding: 10px; font-size: 13px; }
-      button { padding: 12px; font-size: 15px; }
+      .cadastro-container {
+        padding: 20px 15px;
+      }
+
+      h2 {
+        font-size: 20px;
+      }
+
+      input {
+        padding: 10px;
+        font-size: 13px;
+      }
+
+      button {
+        padding: 12px;
+        font-size: 15px;
+      }
     }
   </style>
 </head>
@@ -72,6 +116,7 @@
     <input type="password" id="senha" placeholder="Crie uma senha">
 
     <button id="cadastrar">Cadastrar</button>
+
     <div class="mensagem" id="mensagem"></div>
   </div>
 
@@ -82,8 +127,7 @@
     const cadastrarBtn = document.getElementById('cadastrar');
     const mensagem = document.getElementById('mensagem');
 
-    // Coloque o link do Mercado Pago do plano correspondente aqui
-    const LINK_PAGAMENTO = "https://mpago.la/1r1GzYQ";
+    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxCCALf71wFNmM-a8KMNf09YgKK5OmoyB8ZBe375auTDh3vzHQHZVNeSUDlOcJD9Z8YcQ/exec";
 
     cadastrarBtn.addEventListener('click', () => {
       const nome = nomeInput.value.trim();
@@ -97,12 +141,33 @@
         return;
       }
 
-      // Salva os dados temporariamente no localStorage
-      const usuarioTemp = { nome, email, senha };
-      localStorage.setItem('usuarioTemp', JSON.stringify(usuarioTemp));
+      const formData = new URLSearchParams();
+      formData.append('nome', nome);
+      formData.append('email', email);
+      formData.append('senha', senha);
 
-      // Redireciona para o link de pagamento
-      window.location.href = LINK_PAGAMENTO;
+      fetch(SHEET_API_URL, {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          mensagem.style.color = '#81c784';
+          mensagem.textContent = 'Cadastro realizado com sucesso!';
+          nomeInput.value = '';
+          emailInput.value = '';
+          senhaInput.value = '';
+        } else {
+          mensagem.style.color = 'red';
+          mensagem.textContent = data.message || 'Erro ao cadastrar';
+        }
+      })
+      .catch(err => {
+        console.error('Erro:', err);
+        mensagem.style.color = 'red';
+        mensagem.textContent = 'Erro ao cadastrar';
+      });
     });
   </script>
 </body>
