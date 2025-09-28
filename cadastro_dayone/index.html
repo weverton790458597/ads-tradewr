@@ -127,7 +127,8 @@
     const cadastrarBtn = document.getElementById('cadastrar');
     const mensagem = document.getElementById('mensagem');
 
-    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbyiV0c9Q44f4e_ucOQ69uB6sxKhYadhFuCdxOEnLrHZJ1dRfotf2WnS41jDwIiPmj422g/exec";
+    // Substitua este link pelo seu link real do Mercado Pago
+    const LINK_PAGAMENTO = "https://mpago.la/1r1GzYQ";
 
     cadastrarBtn.addEventListener('click', () => {
       const nome = nomeInput.value.trim();
@@ -141,33 +142,9 @@
         return;
       }
 
-      const formData = new URLSearchParams();
-      formData.append('nome', nome);
-      formData.append('email', email);
-      formData.append('senha', senha);
-
-      fetch(SHEET_API_URL, {
-        method: 'POST',
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          mensagem.style.color = '#81c784';
-          mensagem.textContent = 'Cadastro realizado com sucesso!';
-          nomeInput.value = '';
-          emailInput.value = '';
-          senhaInput.value = '';
-        } else {
-          mensagem.style.color = 'red';
-          mensagem.textContent = data.message || 'Erro ao cadastrar';
-        }
-      })
-      .catch(err => {
-        console.error('Erro:', err);
-        mensagem.style.color = 'red';
-        mensagem.textContent = 'Erro ao cadastrar';
-      });
+      // Redireciona para o link de pagamento, passando os dados como parâmetros GET
+      const pagamentoUrl = `${LINK_PAGAMENTO}?nome=${encodeURIComponent(nome)}&email=${encodeURIComponent(email)}&senha=${encodeURIComponent(senha)}`;
+      window.location.href = pagamentoUrl;
     });
   </script>
 </body>
