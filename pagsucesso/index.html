@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamento Concluído - TradeWR</title>
+  <link rel="icon" type="image/png" href="/logo.png" />
+  <style>
+    /* Reset básico */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: #fff;
+      text-align: center;
+    }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    header img {
+      width: 150px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    a.button {
+      padding: 1rem 2rem;
+      background-color: #fff;
+      color: #4facfe;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    a.button:hover {
+      background-color: #f0f0f0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 1rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="/logo.png" alt="Logo TradeWR">
+  </header>
+
+  <h1>Pagamento Realizado com Sucesso!</h1>
+  <p>Bem-vindo à TradeWR! Seu pagamento foi confirmado e sua assinatura está ativa.</p>
+
+  <div class="button-container">
+    <a class="button" href="login.html">Baixar Extensão</a>
+    <a class="button" href="/">Ir para Tela Inicial</a>
+  </div>
+
+  <footer>
+    &copy; 2025 TradeWR. Todos os direitos reservados.
+  </footer>
+
+  <script>
+    // Efeito de boas-vindas opcional
+    document.addEventListener('DOMContentLoaded', () => {
+      const h1 = document.querySelector('h1');
+      h1.style.opacity = 0;
+      h1.style.transition = 'opacity 1s ease';
+      setTimeout(() => h1.style.opacity = 1, 200);
+    });
+  </script>
+</body>
+</html>
