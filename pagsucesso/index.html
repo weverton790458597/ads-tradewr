@@ -1,132 +1,189 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pagamento Confirmado - TradeWR</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradeWR - Pagamento Realizado</title>
   <link rel="icon" type="image/png" href="/logo.png">
-  <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(to right, #1e3c72, #2a5298);
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+<style>
+    /* Reset e fonte */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
     }
+
+    body, html {
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        background: linear-gradient(135deg, #0f111a, #1a1f2b);
+        color: #fff;
+    }
+
+    /* Container full screen */
     .container {
-      text-align: center;
-      background: rgba(0,0,0,0.6);
-      padding: 40px;
-      border-radius: 15px;
-      max-width: 500px;
-      width: 90%;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        padding: 20px;
     }
-    img.logo {
-      width: 100px;
-      margin-bottom: 20px;
+
+    /* Logo */
+    .logo {
+        max-width: 180px;
+        margin-bottom: 40px;
     }
+
+    /* Headline */
     h1 {
-      font-size: 2rem;
-      margin-bottom: 10px;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #00ffb8;
+        text-shadow: 0 0 10px rgba(0,255,184,0.7);
     }
+
+    /* Subtexto */
     p {
-      font-size: 1.2rem;
-      margin-bottom: 20px;
+        font-size: 1.2rem;
+        margin-bottom: 50px;
+        color: #a0a8b8;
+        max-width: 500px;
+        text-align: center;
     }
-    .status {
-      font-weight: bold;
-      font-size: 1.5rem;
+
+    /* Botões */
+    .buttons {
+        display: flex;
+        gap: 25px;
+        flex-wrap: wrap;
     }
-    .btn {
-      display: inline-block;
-      padding: 12px 25px;
-      font-size: 1rem;
-      color: #fff;
-      background: #28a745;
-      border: none;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: 0.3s;
+
+    .buttons button {
+        padding: 15px 35px;
+        font-size: 1rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
     }
-    .btn:hover {
-      background: #218838;
+
+    .btn-home {
+        background: #1f2533;
+        color: #00ffb8;
+        box-shadow: 0 4px 15px rgba(0,255,184,0.4);
     }
-  </style>
+
+    .btn-home:hover {
+        background: #00ffb8;
+        color: #1a1f2b;
+    }
+
+    .btn-download {
+        background: #0055ff;
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(0,85,255,0.4);
+    }
+
+    .btn-download:hover {
+        background: #3399ff;
+        box-shadow: 0 6px 20px rgba(51,153,255,0.6);
+    }
+
+    /* Background Grid + Partículas Tech */
+    .tech-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+    }
+
+    .line {
+        position: absolute;
+        width: 2px;
+        height: 100%;
+        background: rgba(0,255,184,0.05);
+        animation: moveLine linear infinite;
+    }
+
+    @keyframes moveLine {
+        0% {transform: translateY(-100%);}
+        100% {transform: translateY(100%);}
+    }
+
+    /* Partículas discretas */
+    .particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        background: #00ffb8;
+        opacity: 0.5;
+        animation: particleMove linear infinite;
+    }
+
+    @keyframes particleMove {
+        0% {transform: translateY(0) translateX(0);}
+        100% {transform: translateY(100vh) translateX(50px);}
+    }
+
+    /* Foreground content */
+    .foreground {
+        position: relative;
+        z-index: 1;
+    }
+</style>
 </head>
 <body>
-  <div class="container">
-    <img src="/logo.png" class="logo" alt="TradeWR Logo">
-    <h1>Pagamento em Processamento</h1>
-    <p class="status">Verificando o status do seu pagamento...</p>
-    <a href="/" class="btn" id="homeBtn" style="display:none;">Voltar para o site</a>
-  </div>
 
-  <script>
-    // ======== Função para pegar parâmetros da URL ========
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
+<div class="tech-bg" id="tech-bg"></div>
+
+<div class="container foreground">
+    <img src="/logo.png" alt="TradeWR Logo" class="logo">
+    <h1>Pagamento Realizado</h1>
+    <p>Seu cadastro e pagamento foram concluídos com sucesso. Em alguns minutos seu Acesso será liberado, Agora você está pronto para aproveitar todo o poder da TradeWR e turbinar sua performance no day trade.</p>
+    <div class="buttons">
+        <button class="btn-home" onclick="window.location.href='/'">Voltar para o Home</button>
+        <button class="btn-download" onclick="baixarExtensao()">Baixar Extensão</button>
+    </div>
+</div>
+
+<script>
+    // Função de download (exemplo)
+    function baixarExtensao() {
+        window.location.href = 'tradeWR.crx'; // troque pelo link real da extensão
     }
 
-    const paymentId = getQueryParam('payment_id');
-    const nome = getQueryParam('nome');
-    const email = getQueryParam('email');
-    const senha = getQueryParam('senha');
-
-    const statusText = document.querySelector('.status');
-    const homeBtn = document.getElementById('homeBtn');
-
-    if (!paymentId) {
-      statusText.textContent = "ID de pagamento não fornecido!";
-      homeBtn.style.display = 'inline-block';
-    } else {
-      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwUHavP6xg3n0t1rqwbRWVtZoAMSLYGGIHap5Ttxpc-VPDa1SHs5kO52TTtADyGDq1WWw/exec'; // <- Coloque seu link real do App Script
-
-      // Verificar pagamento
-      fetch(APPS_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'verificar_pagamento', payment_id: paymentId })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.status === 'approved') {
-          statusText.textContent = "Parabéns! Seu pagamento foi aprovado.";
-
-          // ====== Cadastrar usuário automaticamente ======
-          if(nome && email && senha){
-            fetch(APPS_SCRIPT_URL, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'cadastrar_pago',
-                nome: nome,
-                email: email,
-                senha: senha,
-                valor: parseFloat(data.valor || 0)
-              })
-            })
-            .then(res => res.json())
-            .then(resp => console.log('Cadastro:', resp))
-            .catch(err => console.error('Erro no cadastro:', err));
-          }
-
-        } else {
-          statusText.textContent = "Pagamento não confirmado ainda. Aguarde alguns minutos.";
-        }
-        homeBtn.style.display = 'inline-block';
-      })
-      .catch(err => {
-        console.error(err);
-        statusText.textContent = "Erro ao verificar pagamento. Tente novamente mais tarde.";
-        homeBtn.style.display = 'inline-block';
-      });
+    // Criando linhas de fundo
+    const techBg = document.getElementById('tech-bg');
+    for(let i=0;i<30;i++){
+        const line = document.createElement('div');
+        line.classList.add('line');
+        line.style.left = Math.random() * 100 + 'vw';
+        line.style.animationDuration = (Math.random()*5 + 5) + 's';
+        techBg.appendChild(line);
     }
-  </script>
+
+    // Criando partículas
+    for(let i=0;i<50;i++){
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        particle.style.left = Math.random()*100 + 'vw';
+        particle.style.top = Math.random()*100 + 'vh';
+        particle.style.animationDuration = (Math.random()*4 + 4) + 's';
+        techBg.appendChild(particle);
+    }
+</script>
+
 </body>
 </html>
