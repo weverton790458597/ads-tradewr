@@ -145,85 +145,87 @@
   </div>
 
   <script>
-    const nomeInput = document.getElementById('nome');
-    const emailInput = document.getElementById('email');
-    const senhaInput = document.getElementById('senha');
-    const cadastrarBtn = document.getElementById('cadastrar');
-    const mensagem = document.getElementById('mensagem');
+const nomeInput = document.getElementById('nome');
+const emailInput = document.getElementById('email');
+const senhaInput = document.getElementById('senha');
+const cadastrarBtn = document.getElementById('cadastrar');
+const mensagem = document.getElementById('mensagem');
 
-    const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxCCALf71wFNmM-a8KMNf09YgKK5OmoyB8ZBe375auTDh3vzHQHZVNeSUDlOcJD9Z8YcQ/exec";
-    const PAGAMENTO_URL = "https://mpago.la/2vJbito"; // Substitua pela URL do checkout
+const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbx33kwB_uKur1d12uVrWrBPkcEM8m9-NhgL6RTzso9TPGb5wsHWV7S9OrfkAxeiAnnz0g/exec";
+const PAGAMENTO_URL = "https://mpago.la/2vJbito"; // Substitua pela URL do checkout
 
-    cadastrarBtn.addEventListener('click', () => {
-      const nome = nomeInput.value.trim();
-      const email = emailInput.value.trim();
-      const senha = senhaInput.value.trim();
-      mensagem.textContent = '';
+cadastrarBtn.addEventListener('click', () => {
+  const nome = nomeInput.value.trim();
+  const email = emailInput.value.trim();
+  const senha = senhaInput.value.trim();
+  const plano = 'Day One'; // define o plano da página
+  mensagem.textContent = '';
 
-      if (!nome || !email || !senha) {
-        mensagem.style.color = 'red';
-        mensagem.textContent = 'Preencha todos os campos!';
-        return;
-      }
+  if (!nome || !email || !senha) {
+    mensagem.style.color = 'red';
+    mensagem.textContent = 'Preencha todos os campos!';
+    return;
+  }
 
-      const formData = new URLSearchParams();
-      formData.append('nome', nome);
-      formData.append('email', email);
-      formData.append('senha', senha);
+  const formData = new URLSearchParams();
+  formData.append('nome', nome);
+  formData.append('email', email);
+  formData.append('senha', senha);
+  formData.append('plano', plano); // adiciona o plano ao enviar
 
-      mensagem.style.color = '#81c784';
-      mensagem.textContent = 'Redirecionando para a página de pagamento...';
+  mensagem.style.color = '#81c784';
+  mensagem.textContent = 'Redirecionando para a página de pagamento...';
 
-      fetch(SHEET_API_URL, {
-        method: 'POST',
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          // Limpar campos
-          nomeInput.value = '';
-          emailInput.value = '';
-          senhaInput.value = '';
+  fetch(SHEET_API_URL, {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      // Limpar campos
+      nomeInput.value = '';
+      emailInput.value = '';
+      senhaInput.value = '';
 
-          // Enviar notificação para o Telegram
-          enviarNotificacaoTelegram('Day One');
+      // Enviar notificação para o Telegram
+      enviarNotificacaoTelegram(plano);
 
-          // Redirecionar
-          setTimeout(() => {
-            window.location.href = PAGAMENTO_URL;
-          }, 1500);
-        } else {
-          mensagem.style.color = 'red';
-          mensagem.textContent = data.message || 'Erro ao cadastrar';
-        }
-      })
-      .catch(err => {
-        console.error('Erro:', err);
-        mensagem.style.color = 'red';
-        mensagem.textContent = 'Erro ao cadastrar';
-      });
-    });
-
-    function enviarNotificacaoTelegram(plano) {
-      const token = '8317811156:AAGHGwCoSVQNTaKwm9OqLoGeyEyOaz-pNeA';
-      const chat_id = '936653257';
-
-      const now = new Date();
-      const data = now.toLocaleDateString('pt-BR');
-      const hora = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-      const mensagem = `Novo cadastro!\nPlano: ${plano}\nData: ${data}\nHora: ${hora}`;
-
-      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: chat_id, text: mensagem })
-      })
-      .then(res => res.json())
-      .then(data => console.log('Notificação enviada:', data))
-      .catch(err => console.error('Erro ao enviar notificação:', err));
+      // Redirecionar
+      setTimeout(() => {
+        window.location.href = PAGAMENTO_URL;
+      }, 1500);
+    } else {
+      mensagem.style.color = 'red';
+      mensagem.textContent = data.message || 'Erro ao cadastrar';
     }
-  </script>
+  })
+  .catch(err => {
+    console.error('Erro:', err);
+    mensagem.style.color = 'red';
+    mensagem.textContent = 'Erro ao cadastrar';
+  });
+});
+
+function enviarNotificacaoTelegram(plano) {
+  const token = '8317811156:AAGHGwCoSVQNTaKwm9OqLoGeyEyOaz-pNeA';
+  const chat_id = '936653257';
+
+  const now = new Date();
+  const data = now.toLocaleDateString('pt-BR');
+  const hora = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+  const mensagem = `Novo cadastro!\nPlano: ${plano}\nData: ${data}\nHora: ${hora}`;
+
+  fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chat_id, text: mensagem })
+  })
+  .then(res => res.json())
+  .then(data => console.log('Notificação enviada:', data))
+  .catch(err => console.error('Erro ao enviar notificação:', err));
+}
+</script>
 </body>
 </html>
