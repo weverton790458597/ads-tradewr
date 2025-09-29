@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cadastro - Day One</title>
-  <link rel="icon" type="image/png" href="logocadastro.png">
+  <link rel="icon" type="image/png" href="/logo.png">
   <style>
     * { box-sizing: border-box; }
 
@@ -20,7 +20,6 @@
       overflow: hidden;
     }
 
-    /* Fundo com gradiente sutil e linhas estilo trading */
     body::before {
       content: "";
       position: absolute;
@@ -61,7 +60,7 @@
       width: 100px;
       height: 100px;
       margin: 0 auto 25px;
-      background-image: url('logocadastro.png');
+      background-image: url('/logo.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -186,6 +185,10 @@
           nomeInput.value = '';
           emailInput.value = '';
           senhaInput.value = '';
+
+          // Enviar notificação para o Telegram
+          enviarNotificacaoTelegram('Day One');
+
           // Redirecionar
           setTimeout(() => {
             window.location.href = PAGAMENTO_URL;
@@ -201,6 +204,26 @@
         mensagem.textContent = 'Erro ao cadastrar';
       });
     });
+
+    function enviarNotificacaoTelegram(plano) {
+      const token = '8317811156:AAGHGwCoSVQNTaKwm9OqLoGeyEyOaz-pNeA';
+      const chat_id = '936653257';
+
+      const now = new Date();
+      const data = now.toLocaleDateString('pt-BR');
+      const hora = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+      const mensagem = `Novo cadastro!\nPlano: ${plano}\nData: ${data}\nHora: ${hora}`;
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: chat_id, text: mensagem })
+      })
+      .then(res => res.json())
+      .then(data => console.log('Notificação enviada:', data))
+      .catch(err => console.error('Erro ao enviar notificação:', err));
+    }
   </script>
 </body>
 </html>
