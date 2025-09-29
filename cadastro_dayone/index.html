@@ -3,106 +3,131 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro - TradeWR</title>
-  <!-- Favicon -->
+  <title>Cadastro - Day One</title>
   <link rel="icon" type="image/png" href="logocadastro.png">
   <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
+      font-family: "Inter", Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: #1e1e1e;
-      padding: 10px;
+      background: #0b0d14;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Fundo com gradiente sutil e linhas estilo trading */
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(160deg, rgba(124,58,237,0.1), rgba(110,231,249,0.05));
+      z-index: -2;
+    }
+
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 20px),
+                        repeating-linear-gradient(-45deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 20px);
+      z-index: -1;
+      animation: moveGrid 30s linear infinite;
+    }
+
+    @keyframes moveGrid {
+      0% { background-position: 0 0, 0 0; }
+      100% { background-position: 200px 200px, -200px -200px; }
     }
 
     .cadastro-container {
+      position: relative;
       width: 100%;
       max-width: 400px;
-      background-color: #2c2c2c;
-      padding: 30px 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      background: rgba(20, 22, 30, 0.85);
+      padding: 40px 25px;
+      border-radius: 15px;
+      box-shadow: 0 0 40px rgba(124,58,237,0.4);
       text-align: center;
-      color: #fff;
+      backdrop-filter: blur(12px);
+      z-index: 10;
     }
 
     .logo {
       width: 100px;
       height: 100px;
-      margin: 0 auto 20px;
-      background-image: url('logocadastro.png'); /* Substitua pela sua logo */
+      margin: 0 auto 25px;
+      background-image: url('logocadastro.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
     }
 
     h2 {
-      margin-bottom: 25px;
-      color: #81c784;
-      font-size: 22px;
+      margin-bottom: 30px;
+      font-size: 24px;
+      font-weight: 700;
+      color: #6EE7F9;
     }
 
     input {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       margin-bottom: 15px;
       border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      background-color: #3a3a3a;
+      border-radius: 8px;
+      font-size: 15px;
+      background-color: #1f2029;
       color: #fff;
+      transition: 0.2s;
     }
 
     input::placeholder {
-      color: #ccc;
+      color: #888;
+    }
+
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 10px rgba(110,231,249,0.5);
+      background-color: #292a38;
     }
 
     button {
       width: 100%;
       padding: 14px;
       font-size: 16px;
-      font-weight: bold;
-      background-color: #4caf50;
+      font-weight: 700;
+      background: linear-gradient(90deg, #6EE7F9, #7C3AED);
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
-      color: #000;
-      transition: 0.3s;
+      color: #0b0d14;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
     }
 
     button:hover {
-      background-color: #81c784;
+      filter: brightness(1.1);
     }
 
     .mensagem {
-      margin-top: 15px;
+      margin-top: 18px;
       font-size: 14px;
-      min-height: 18px;
+      min-height: 20px;
     }
 
     @media (max-width: 500px) {
       .cadastro-container {
-        padding: 20px 15px;
+        padding: 25px 20px;
       }
-
-      h2 {
-        font-size: 20px;
-      }
-
-      input {
-        padding: 10px;
-        font-size: 13px;
-      }
-
-      button {
-        padding: 12px;
-        font-size: 15px;
-      }
+      h2 { font-size: 20px; }
+      input { padding: 12px; font-size: 14px; }
+      button { padding: 12px; font-size: 15px; }
     }
   </style>
 </head>
@@ -128,6 +153,7 @@
     const mensagem = document.getElementById('mensagem');
 
     const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbxCCALf71wFNmM-a8KMNf09YgKK5OmoyB8ZBe375auTDh3vzHQHZVNeSUDlOcJD9Z8YcQ/exec";
+    const PAGAMENTO_URL = "https://mpago.la/2vJbito"; // Substitua pela URL do checkout
 
     cadastrarBtn.addEventListener('click', () => {
       const nome = nomeInput.value.trim();
@@ -146,6 +172,9 @@
       formData.append('email', email);
       formData.append('senha', senha);
 
+      mensagem.style.color = '#81c784';
+      mensagem.textContent = 'Redirecionando para a página de pagamento...';
+
       fetch(SHEET_API_URL, {
         method: 'POST',
         body: formData
@@ -153,11 +182,14 @@
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          mensagem.style.color = '#81c784';
-          mensagem.textContent = 'Cadastro realizado com sucesso!';
+          // Limpar campos
           nomeInput.value = '';
           emailInput.value = '';
           senhaInput.value = '';
+          // Redirecionar
+          setTimeout(() => {
+            window.location.href = PAGAMENTO_URL;
+          }, 1500);
         } else {
           mensagem.style.color = 'red';
           mensagem.textContent = data.message || 'Erro ao cadastrar';
