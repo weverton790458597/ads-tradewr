@@ -3,98 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TradeWR</title>
+<title>TradeWR — Acesso aos Alertas</title>
 <link rel="icon" type="image/png" href="logo.png">
 <style>
-:root {
-  --bg-900:#06070a;
-  --glass: rgba(255,255,255,0.04);
-  --glass-strong: rgba(255,255,255,0.06);
-  --accent-1: #6EE7F9;
-  --accent-2: #7C3AED;
-  --accent-3: #FFD166;
-  --muted: #9aa6b2;
-  --card-radius: 14px;
-}
+:root{--bg-900:#06070a;--accent-1:#6EE7F9;--accent-2:#7C3AED;--muted:#9aa6b2;--card-radius:14px}
 *{box-sizing:border-box}
-html, body {
-  min-height: 100%;
-  margin: 0;
-  font-family: Inter,Segoe UI,Roboto,system-ui,-apple-system,"Helvetica Neue",Arial;
-  background: var(--bg-900);
-  color: #e6edf3;
-  line-height: 1.5;
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Roboto,system-ui,-apple-system,"Helvetica Neue",Arial;background:var(--bg-900);color:#e6edf3;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 button{font:inherit;cursor:pointer}
-
-/* Page layers */
-.bg-gradient {position:fixed;inset:0;z-index:0;background: radial-gradient(ellipse at 10% 10%, rgba(124,58,237,0.12), transparent 8%),radial-gradient(ellipse at 90% 85%, rgba(255,209,102,0.06), transparent 12%),linear-gradient(180deg, rgba(15,18,23,1) 0%, rgba(6,8,12,1) 100%);pointer-events:none;animation:slowPan 18s linear infinite;filter:blur(30px) saturate(1.1);}
-@keyframes slowPan {0%{background-position:0% 0%}50%{background-position:25% 75%}100%{background-position:0% 0%}}
-.bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.12;background-image:radial-gradient(circle at 10px 10px, rgba(255,255,255,0.03) 1px, transparent 1px);background-size:28px 28px;mix-blend-mode:screen;transform:translateZ(0);animation:particlesMove 40s linear infinite;}
-@keyframes particlesMove {0%{background-position:0 0}100%{background-position:1000px 800px}}
-
-/* Header */
-header {position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 28px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-bottom: 1px solid rgba(255,255,255,0.03);backdrop-filter: blur(6px);}
-.brand { display:flex; align-items:center; gap:12px; cursor:pointer; }
-.brand img{height:40px;width:40px;object-fit:contain;border-radius:8px}
-.brand h1{font-size:1.05rem;margin:0;color:var(--accent-1);letter-spacing:0.4px}
-nav{display:flex;gap:18px;align-items:center}
-nav a{color:var(--muted);font-weight:600;font-size:0.95rem;opacity:0.95}
-nav a:hover{color:var(--accent-1);text-decoration:underline 1px rgba(110,231,249,0.12)}
-
-/* Hero */
-.hero {position:relative;padding:88px 18px 48px;display:grid;place-items:center;text-align:center;z-index:10;}
-.hero-inner{max-width:1200px;width:100%;padding:0 20px;display:grid;grid-template-columns:1fr;gap:24px;align-items:center}
-.alpha-title {position:relative;display:inline-block;font-weight:800;font-size:clamp(38px,6vw,64px);letter-spacing:-1px;line-height:1;color:transparent;-webkit-text-stroke: 0.5px rgba(255,255,255,0.06);}
-.alpha-title::before{content:"Ganhe vantagem no mercado";position:absolute;inset:0;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 24px rgba(124,58,237,0.12));transform:translateZ(0);mix-blend-mode:screen;animation:glowShift 6s ease-in-out infinite;}
-.alpha-title::after{content:"Ganhe vantagem no mercado";position:absolute;inset:0;color:rgba(255,255,255,0.04);transform:translate(0.6px,0.4px);clip-path: polygon(0 0, 100% 0, 100% 45%, 0 50%);opacity:0.6;animation:glitch 3.1s infinite linear;}
-@keyframes glowShift {0%{filter:drop-shadow(0 6px 14px rgba(110,231,249,0.10))}50%{filter:drop-shadow(0 8px 28px rgba(124,58,237,0.14))}100%{filter:drop-shadow(0 6px 14px rgba(110,231,249,0.10))}}
-@keyframes glitch {0%{transform:translate(0.6px,0.4px) skewX(0)}10%{transform:translate(-1.8px,-0.6px) skewX(-1deg)}20%{transform:translate(1.2px,0.8px) skewX(0.6deg)}30%{transform:translate(0.6px,0.6px) skewX(0)}100%{transform:translate(0.6px,0.4px) skewX(0)}}
-.hero-sub { font-size:1.05rem;color:var(--muted);max-width:900px;margin:0 auto; }
-.cta-wrap{display:flex;gap:14px;justify-content:center;align-items:center;margin-top:10px}
-.cta{position:relative;display:inline-block;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#061018;padding:14px 26px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(124,58,237,0.12),0 2px 6px rgba(0,0,0,0.5);border:none;transition:transform .18s ease;}
-.cta:hover{ transform:translateY(-4px); }
-.cta:active{ transform:translateY(-1px) scale(.995); }
-.cta .pulse{position:absolute; inset:0;border-radius:999px;box-shadow:0 0 40px rgba(124,58,237,0.16); animation:pulse 2.2s infinite}
-@keyframes pulse {0%{opacity:0.6;transform:scale(1)}50%{opacity:0.15;transform:scale(1.18)}100%{opacity:0.6;transform:scale(1)}}
-
-/* Main */
-main{position:relative;z-index:10;padding:20px 18px 120px}
-.panel { max-width:1200px;margin:0 auto;display:grid;gap:28px; }
-.benefits { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; }
-.benefit-card{background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.04); padding:20px;border-radius:var(--card-radius);backdrop-filter: blur(8px) saturate(1.05);display:flex;gap:14px;align-items:flex-start;transition:transform .22s ease, box-shadow .22s ease;box-shadow: 0 6px 22px rgba(6,8,12,0.6);}
-.benefit-card:hover{transform:translateY(-10px); box-shadow:0 18px 40px rgba(12,14,20,0.7)}
-.benefit-ico{min-width:52px;height:52px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.03);box-shadow: inset 0 -6px 20px rgba(255,255,255,0.01);}
+.page{position:relative;min-height:100vh;overflow:hidden}
+/* background radial + particles */
+.bg-gradient{position:fixed;inset:0;z-index:0;background: radial-gradient(ellipse at 10% 10%, rgba(124,58,237,0.12), transparent 8%),radial-gradient(ellipse at 90% 85%, rgba(255,209,102,0.06), transparent 12%),linear-gradient(180deg, rgba(15,18,23,1) 0%, rgba(6,8,12,1) 100%);pointer-events:none;filter:blur(30px) saturate(1.05);}
+.bg-particles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.12;background-image:radial-gradient(circle at 10px 10px, rgba(255,255,255,0.03) 1px, transparent 1px);background-size:28px 28px;mix-blend-mode:screen;transform:translateZ(0)}
+/* header */
+header{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-bottom:1px solid rgba(255,255,255,0.03);backdrop-filter: blur(6px)}
+.brand{display:flex;align-items:center;gap:12px;cursor:pointer}
+.brand img{height:36px;width:36px;border-radius:8px;object-fit:contain}
+.brand h1{font-size:1.02rem;margin:0;color:var(--accent-1);letter-spacing:0.4px}
+/* hero */
+.hero{position:relative;padding:84px 20px 36px;text-align:center;z-index:10}
+.hero-inner{max-width:1100px;margin:0 auto}
+.alpha-title{position:relative;display:inline-block;font-weight:800;font-size:clamp(36px,6vw,56px);letter-spacing:-1px;line-height:1;color:transparent;-webkit-text-stroke:0.5px rgba(255,255,255,0.06)}
+.alpha-title::before{content:attr(data-title);position:absolute;inset:0;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 6px 24px rgba(124,58,237,0.12));mix-blend-mode:screen}
+.alpha-title::after{content:attr(data-title);position:absolute;inset:0;color:rgba(255,255,255,0.04);transform:translate(0.6px,0.4px);clip-path: polygon(0 0, 100% 0, 100% 45%, 0 50%);opacity:0.6;animation:glitch 3.1s infinite linear}
+@keyframes glitch{0%{transform:translate(0.6px,0.4px) skewX(0)}10%{transform:translate(-1.8px,-0.6px) skewX(-1deg)}20%{transform:translate(1.2px,0.8px) skewX(0.6deg)}30%{transform:translate(0.6px,0.6px) skewX(0)}100%{transform:translate(0.6px,0.4px) skewX(0)}}
+.hero-sub{font-size:1.05rem;color:var(--muted);max-width:900px;margin:12px auto 0}
+.cta-wrap{display:flex;gap:14px;justify-content:center;align-items:center;margin-top:18px}
+.cta{position:relative;display:inline-block;background:linear-gradient(90deg,var(--accent-1),var(--accent-2));color:#061018;padding:14px 26px;border-radius:999px;font-weight:700;box-shadow:0 10px 30px rgba(124,58,237,0.12),0 2px 6px rgba(0,0,0,0.5);border:none;transition:transform .18s ease}
+.cta:hover{transform:translateY(-4px)}
+.cta .pulse{position:absolute;inset:0;border-radius:999px;box-shadow:0 0 40px rgba(124,58,237,0.16);animation:pulse 2.2s infinite}
+@keyframes pulse{0%{opacity:0.6;transform:scale(1)}50%{opacity:0.15;transform:scale(1.18)}100%{opacity:0.6;transform:scale(1)}}
+/* hero bullets */
+.hero-bullets{margin-top:22px;list-style:disc;text-align:left;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.5;color:var(--muted);padding-left:22px}
+/* main */
+main{position:relative;z-index:10;padding:24px 18px 80px}
+.panel{max-width:1100px;margin:0 auto;display:grid;gap:28px}
+/* cards */
+.benefits{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.benefit-card{background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02)); border:1px solid rgba(255,255,255,0.04); padding:18px;border-radius:var(--card-radius);backdrop-filter: blur(8px);display:flex;gap:14px;align-items:flex-start}
 .benefit-body h4{margin:0 0 6px 0;font-size:1.02rem;color:var(--accent-2)}
 .benefit-body p{margin:0;color:var(--muted);font-size:0.95rem}
-
-/* Staircase */
-.staircase{display:flex;gap:18px;align-items:end;justify-content:center;margin-top:28px;}
-.step{width:120px;padding:12px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.02),rgba(255,255,255,0.01));text-align:center;border:1px solid rgba(255,255,255,0.03);}
-.step.alpha{background:linear-gradient(180deg, rgba(124,58,237,0.14), rgba(110,231,249,0.06)); transform:translateY(-18px); box-shadow:0 12px 40px rgba(124,58,237,0.06)}
-.step h5{margin:0;font-weight:700;color:var(--muted)}
-.step p{margin:6px 0 0 0;font-size:0.95rem;color:var(--muted)}
-
-/* Footer */
-footer.sitefoot{
-  margin-top:80px;
-  padding:34px 18px;
-  text-align:center;
-  color:var(--muted);
-  border-top:1px solid rgba(255,255,255,0.02);
-  position: relative; /* adicionado */
-  z-index: 20;       /* adicionado */
-}
-
-footer .logo{height:30px;opacity:0.95}
-
-/* Responsividade */
-@media (max-width:980px){.details{grid-template-columns:1fr}.details-right{order:2}.hero{padding:56px 18px 40px}}
-@media (max-width:560px){header{padding:12px}.alpha-title{font-size:28px}.benefit-ico{min-width:44px;height:44px}.step{width:84px}}
+/* pricing */
+.pricing{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:6px}
+.price-badge{background:rgba(255,255,255,0.04);padding:12px 18px;border-radius:12px;font-weight:800;border:1px solid rgba(255,255,255,0.03)}
+/* footer */
+footer.sitefoot{margin-top:64px;padding:28px 18px;text-align:center;color:var(--muted);border-top:1px solid rgba(255,255,255,0.02)}
+/* responsive */
+@media (max-width:720px){.alpha-title{font-size:28px}.hero{padding-top:92px}.hero-bullets{padding-left:18px}}
 </style>
 </head>
 <body>
@@ -103,95 +58,83 @@ footer .logo{height:30px;opacity:0.95}
   <div class="bg-particles" aria-hidden="true"></div>
 
   <header>
-    <div class="brand" onclick="location.reload()">
+    <div class="brand" onclick="location.href='/'" aria-hidden="false">
       <img src="logo.png" alt="TradeWR logo">
       <h1>TradeWR</h1>
     </div>
-    <nav>
-      <a href="#sobre">Sobre</a>
+    <nav aria-hidden="true" style="display:flex;gap:12px;align-items:center">
+      <a href="#como-funciona">Como funciona</a>
       <a href="#planos">Planos</a>
-      <a href="#diferenciais">Diferenciais</a>
       <a href="#contato">Contato</a>
-      <a href="#" onclick="abrirColaborador()">Colaborador</a>
     </nav>
   </header>
 
   <section class="hero" role="region" aria-label="Hero">
     <div class="hero-inner">
-      <div style="display:grid;gap:12px;align-items:center">
-        <div class="alpha-title" aria-hidden="true"></div>
-        <p class="hero-sub">Extensão inteligente para traders que buscam precisão, velocidade e praticidade na hora de operar. Tudo em tempo real, com suporte dedicado e ferramentas exclusivas.</p>
+      <div>
+        <div class="alpha-title" data-title="GANHE TEMPO, NÃO FAÇA ANÁLISE" aria-hidden="true"></div>
+        <p class="hero-sub">você não analisa nada — só espera o sinal cair.</p>
         <div class="cta-wrap">
-          <button class="cta" onclick="document.querySelector('#planos').scrollIntoView({behavior:'smooth'})"><span class="pulse" aria-hidden="true"></span>Conhecer Planos</button>
+          <button class="cta" onclick="window.location.href='https://t.me/trade_wr'">
+            <span class="pulse" aria-hidden="true"></span>
+            QUERO ACESSO AO GRUPO — R$29,90/mês
+          </button>
         </div>
+        <ul class="hero-bullets" aria-hidden="false">
+          <li>sinais em tempo real no exato momento em que saem</li>
+          <li>chega direto no Grupo do Telegram</li>
+          <li>tu decide se entra ou não — simples, sem novela</li>
+        </ul>
       </div>
     </div>
   </section>
 
   <main>
     <div class="panel">
-      <section id="sobre">
-        <h2 style="text-align:center;color:var(--accent-2)">Sobre a Extensão</h2>
-        <p style="text-align:center;color:var(--muted);max-width:900px;margin:0 auto">Nossa extensão foi desenvolvida para simplificar o processo de análise e execução de sinais de day trade. Com design intuitivo e tecnologia robusta, oferecemos a melhor experiência para iniciantes e profissionais.</p>
-        <div class="video-container" style="margin-top:18px;text-align:center">
-          <iframe height="400" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allowfullscreen loading="lazy" title="Vídeo explicativo" style="border-radius:12px;width:100%;max-width:700px"></iframe>
+      <section id="como-funciona" style="text-align:center">
+        <h2 style="color:var(--accent-2)">Como funciona</h2>
+        <p style="color:var(--muted);max-width:860px;margin:12px auto 0;line-height:1.6;font-size:1.03rem">a extensão TradeWR fica rodando em background.
+quando ela identifica um sinal → ela envia automaticamente pro grupo no Telegram.
+você recebe e decide se entra ou não. simples assim.</p>
+      </section>
+
+      <section id="planos">
+        <h2 style="text-align:center;color:var(--accent-2);margin-top:12px">O que você recebe</h2>
+        <div class="benefits" style="margin-top:18px">
+          <article class="benefit-card"><div class="benefit-body"><h4>Sinal em tempo real</h4><p>Alerta enviado no mesmo segundo que o gatilho dispara — velocidade é vantagem.</p></div></article>
+          <article class="benefit-card"><div class="benefit-body"><h4>Filtro Inteligente</h4><p>Menos ruído, mais foco.</p></div></article>
+          <article class="benefit-card"><div class="benefit-body"><h4>Suporte via Telegram</h4><p>Suporte direto para dúvidas e sugestões — Direto no Telegram.</p></div></article>
+          <article class="benefit-card"><div class="benefit-body"><h4>Plano único</h4><p>R$29,90/mês — entrada clara, sem surpresas.</p></div></article>
+        </div>
+
+        <div style="text-align:center;margin-top:22px">
+          <div class="pricing"><div class="price-badge">R$29,90 / mês</div></div>
+          <div style="margin-top:14px">
+            <button class="cta" onclick="window.location.href='https://t.me/trade_wr'">
+              <span class="pulse" aria-hidden="true"></span>
+              QUERO ACESSO AO GRUPO
+            </button>
+          </div>
         </div>
       </section>
 
-      <section id="planos" style="margin-top:32px">
-        <h2 style="text-align:center;color:var(--accent-2)">Planos</h2>
-        <div class="benefits">
-          <article class="benefit-card"><div class="benefit-body"><h4>Day One 🌱</h4><p>Experimente o poder dos sinais desde o primeiro dia. Sem compromisso, teste e veja se você consegue operar com mais confiança.</p><p><strong>R$ 20/7 dias</strong></p><button class="cta" onclick="window.location.href='dayone/'"><span class="pulse" aria-hidden="true"></span>Assine agora</button></div></article>
-          <article class="benefit-card"><div class="benefit-body"><h4>Trader Starter 🚀</h4><p>Comece sua jornada no mercado com sinais confiáveis e suporte que guia cada operação. Ideal para quem quer resultados consistentes sem complicação.</p><p><strong>R$ 97/mês</strong></p><button class="cta" onclick="window.location.href='starter/'"><span class="pulse" aria-hidden="true"></span>Assine agora</button></div></article>
-          <article class="benefit-card"><div class="benefit-body"><h4>Trader Accelerator ⚡</h4><p>Eleve seu trading com sinais avançados, insights estratégicos e acesso a ferramentas que aceleram seus lucros. O plano para quem quer realmente crescer rápido.</p><p><strong>R$ 497/mês</strong></p><button class="cta" onclick="window.location.href='accelerator/'"><span class="pulse" aria-hidden="true"></span>Assine agora</button></div></article>
-          <article class="benefit-card"><div class="benefit-body"><h4>Alpha Signals 👑</h4><p>O nível máximo do seu trading. Sinais de elite, ferramentas completas e tudo que você precisa para operar como um verdadeiro Alpha. Para quem não quer apenas seguir o mercado, mas dominá-lo.</p><p><strong>R$ 997/mês</strong></p><button class="cta" onclick="window.location.href='alpha/'"><span class="pulse" aria-hidden="true"></span>Assine agora</button></div></article>
-        </div>
-
-        <div class="staircase" aria-hidden="true" style="margin-top:22px">
-          <div class="step"><h5>Day One</h5><p>Início</p></div>
-          <div class="step"><h5>Starter</h5><p>Consistência</p></div>           
-          <div class="step"><h5>Accelerator</h5><p>Ponte</p></div>
-          <div class="step"><h5>Alpha</h5><p>Topo</p></div>
-        </div>
+      <section id="diferenciais" style="margin-top:28px">
+        <h2 style="text-align:center;color:var(--accent-2)">Por que testar</h2>
+        <p style="color:var(--muted);max-width:860px;margin:10px auto;line-height:1.6">testar com baixo custo e risco. começa pequeno, observa como os sinais entram no seu fluxo e decide se quer continuar. sem promessas de lucro — apenas acesso rápido e filtrado.</p>
       </section>
 
-      <section id="diferenciais" style="margin-top:32px">
-        <h2 style="text-align:center;color:var(--accent-2)">Diferenciais da Extensão</h2>
-        <div class="benefits">
-          <article class="benefit-card"><div class="benefit-body"><h4>Confirmação de Entradas Inteligente</h4><p>Módulos que analisam 500 candles e indicam a porcentagem de acerto para decisões mais seguras.</p></div></article>
-          <article class="benefit-card"><div class="benefit-body"><h4>Alarmes Personalizáveis</h4><p>Sons de alerta quando sinais aparecem, podendo ser ativados ou desativados pelo usuário.</p></div></article>
-          <article class="benefit-card"><div class="benefit-body"><h4>Sinais em Tempo Real</h4><p>Receba sinais instantaneamente, sem atrasos, garantindo rapidez e vantagem no mercado.</p></div></article>
-          <article class="benefit-card"><div class="benefit-body"><h4>Extremamente Leve</h4><p>Não sobrecarrega o notebook ou a plataforma da corretora, ideal para operações contínuas.</p></div></article>
-          <article class="benefit-card"><div class="benefit-body"><h4>Suporte 24/7</h4><p>Atendimento direto com o criador, garantindo ajuda rápida e personalizada sempre que necessário.</p></div></article>
-          <article class="benefit-card"><div class="benefit-body"><h4>Gerenciamento de Risco Inteligente</h4><p>Planilha em Excel com VBA avançado para controle detalhado do dia a dia das operações.</p></div></article>
-        </div>
-      </section>
-
-      <section id="contato" style="margin-top:32px;text-align:center">
+      <section id="contato" style="margin-top:28px;text-align:center">
         <h2 style="color:var(--accent-2)">Contato</h2>
-        <p style="color:var(--muted)">Quer saber mais? Entre em contato pelo nosso <a href="mailto:tradewr.adm@gmail.com">email</a> ou <a href="https://t.me/+KszAlatLNHY5ODYx">Grupo no Telegram</a>.</p>
+        <p style="color:var(--muted)">Para suporte e dúvidas: use o Telegram. <!-- https://t.me/trade_wr --> </p>
       </section>
+
     </div>
   </main>
 
   <footer class="sitefoot">
-    <p>© 2025 TradeWR. Todos os direitos reservados. | Desenvolvido por TradeWR</p>
+    <p>© 2025 TradeWR. Todos os direitos reservados.</p>
   </footer>
-</div>
 
-<!-- Colaborador -->
-<div id="colaborador" style="position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(6,7,10,0.98);display:none;justify-content:center;align-items:center;flex-direction:column;color:white;z-index:200">
-  <h2>Área do Colaborador</h2>
-  <p>Aqui você pode acessar suas ferramentas e relatórios.</p>
-  <div style="display:flex;gap:12px;margin-top:12px">
-    <button onclick="window.location.href='colaborador/'" class="cta"><span class="pulse" aria-hidden="true"></span>Ir para Ferramentas</button>
-    <button onclick="fecharColaborador()" class="cta"><span class="pulse" aria-hidden="true"></span>Fechar</button>
-  </div>
 </div>
-
-<script>
-function abrirColaborador(){document.getElementById('colaborador').style.display='flex'}
-function fecharColaborador(){document.getElementById('colaborador').style.display='none'}
-</script>
 </body>
 </html>
